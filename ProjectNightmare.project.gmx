@@ -320,6 +320,11 @@
     <script>scripts\FMODGMS_Util_SecondsToSamples.gml</script>
     <script>scripts\room_change.gml</script>
     <script>scripts\particle_create.gml</script>
+    <scripts name="Delayed Calling DLL">
+      <script>scripts\scr_initDelayedCallingDLL.gml</script>
+      <script>scripts\scr_get_DLL_function.gml</script>
+      <script>scripts\scr_call_DLL_function.gml</script>
+    </scripts>
   </scripts>
   <shaders name="shaders">
     <shader type="GLSLES">shaders\sh_smf_animate.shader</shader>
