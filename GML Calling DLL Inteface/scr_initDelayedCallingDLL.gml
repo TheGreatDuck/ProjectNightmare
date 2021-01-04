@@ -130,3 +130,4 @@ global.prime_argument_string = external_define("CallDelayedFunctions.dll", "prim
 global.gameLoopInit = scr_get_DLL_function("CallDelayedFunctions.dll", "gameLoopInit");
 global.gameLoopStep = scr_get_DLL_function("CallDelayedFunctions.dll", "gameLoopStep");
 global.gameLoopDraw = scr_get_DLL_function("CallDelayedFunctions.dll", "gameLoopDraw");
+
