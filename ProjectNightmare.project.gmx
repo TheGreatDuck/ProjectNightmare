@@ -322,63 +322,63 @@
     <script>scripts\FMODGMS_Util_SecondsToSamples.gml</script>
     <script>scripts\room_change.gml</script>
     <script>scripts\particle_create.gml</script>
-    <scripts name="GML Calling DLL Inteface">
-      <script>GML Calling DLL Inteface\Internal\scr_initDelayedCallingDLL.gml</script>
-      <script>GML Calling DLL Inteface\Internal\scr_get_DLL_function.gml</script>
-      <script>GML Calling DLL Inteface\Internal\scr_call_DLL_function.gml</script>
+    <scripts name="GML Calling DLL Interface">
       <scripts name="Internal">
-        <script>GML Calling DLL Inteface\Internal\scr_delayCallDLL_getInput.gml</script>
-        <script>GML Calling DLL Inteface\Internal\scr_delayCallDLL_callQueuedFunctions.gml</script>
-        <script>GML Calling DLL Inteface\Internal\scr_delayCallDLL_removeDelayedFunctionCall.gml</script>
-        <script>GML Calling DLL Inteface\Internal\scr_delayCallDLL_getInputDelayedVariable.gml</script>
-        <script>GML Calling DLL Inteface\Internal\scr_delayCallDLL_getInputText.gml</script>
-        <script>GML Calling DLL Inteface\Internal\scr_delayCallDLL_getInputNumber.gml</script>
-        <script>GML Calling DLL Inteface\Internal\scr_delayCallDLL_getInputType.gml</script>
-        <script>GML Calling DLL Inteface\Internal\scr_delayCallDLL_getFunction.gml</script>
-        <script>GML Calling DLL Inteface\Internal\scr_delayCallDLL_setDelayedOutput.gml</script>
-        <script>GML Calling DLL Inteface\Internal\scr_delayCallDLL_getHasOutput.gml</script>
-        <script>GML Calling DLL Inteface\Internal\scr_delayCallDLL_isThereDelayedFunctionCall.gml</script>
+        <script>scripts\scr_delayCallDLL_getInput.gml</script>
+        <script>scripts\scr_delayCallDLL_callQueuedFunctions.gml</script>
+        <script>scripts\scr_delayCallDLL_removeDelayedFunctionCall.gml</script>
+        <script>scripts\scr_delayCallDLL_getInputDelayedVariable.gml</script>
+        <script>scripts\scr_delayCallDLL_getInputText.gml</script>
+        <script>scripts\scr_delayCallDLL_getInputNumber.gml</script>
+        <script>scripts\scr_delayCallDLL_getInputType.gml</script>
+        <script>scripts\scr_delayCallDLL_getFunction.gml</script>
+        <script>scripts\scr_delayCallDLL_setDelayedOutput.gml</script>
+        <script>scripts\scr_delayCallDLL_getHasOutput.gml</script>
+        <script>scripts\scr_delayCallDLL_isThereDelayedFunctionCall.gml</script>
       </scripts>
       <scripts name="Wrapper Functions">
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_draw_block.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_draw_cylinder.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_draw_cone.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_draw_ellipsoid.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_draw_wall.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_draw_floor.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_transform_set_identity.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_transform_add_rotation_x.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_transform_add_rotation_y.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_transform_add_rotation_z.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_transform_add_translation.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_transform_add_rotation_axis.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_sprite_get_texture.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_primitive_begin.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_vertex.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_vertex_color.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_primitive_end.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_model_draw.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_model_create.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_model_load.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_sprite_add.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_draw_sprite.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_transform_add_scaling.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_set_projection_ortho.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_set_projection_perspective.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_set_projection.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_model_primitive_begin.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_model_vertex_texture.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_model_primitive_end.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_model_destroy.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_start.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_set_fog.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_d3d_set_lighting.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_draw_text.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_game_end.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_keyboard_check.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_set_keyboard_lastkey.gml</script>
-        <script>GML Calling DLL Inteface\Wrapper Functions\scr_wrapper_get_keyboard_lastkey.gml</script>
+        <script>scripts\scr_wrapper_d3d_draw_block.gml</script>
+        <script>scripts\scr_wrapper_d3d_draw_cylinder.gml</script>
+        <script>scripts\scr_wrapper_d3d_draw_cone.gml</script>
+        <script>scripts\scr_wrapper_d3d_draw_ellipsoid.gml</script>
+        <script>scripts\scr_wrapper_d3d_draw_wall.gml</script>
+        <script>scripts\scr_wrapper_d3d_draw_floor.gml</script>
+        <script>scripts\scr_wrapper_d3d_transform_set_identity.gml</script>
+        <script>scripts\scr_wrapper_d3d_transform_add_rotation_x.gml</script>
+        <script>scripts\scr_wrapper_d3d_transform_add_rotation_y.gml</script>
+        <script>scripts\scr_wrapper_d3d_transform_add_rotation_z.gml</script>
+        <script>scripts\scr_wrapper_d3d_transform_add_translation.gml</script>
+        <script>scripts\scr_wrapper_d3d_transform_add_rotation_axis.gml</script>
+        <script>scripts\scr_wrapper_sprite_get_texture.gml</script>
+        <script>scripts\scr_wrapper_d3d_primitive_begin.gml</script>
+        <script>scripts\scr_wrapper_d3d_vertex.gml</script>
+        <script>scripts\scr_wrapper_d3d_vertex_color.gml</script>
+        <script>scripts\scr_wrapper_d3d_primitive_end.gml</script>
+        <script>scripts\scr_wrapper_d3d_model_draw.gml</script>
+        <script>scripts\scr_wrapper_d3d_model_create.gml</script>
+        <script>scripts\scr_wrapper_d3d_model_load.gml</script>
+        <script>scripts\scr_wrapper_sprite_add.gml</script>
+        <script>scripts\scr_wrapper_draw_sprite.gml</script>
+        <script>scripts\scr_wrapper_d3d_transform_add_scaling.gml</script>
+        <script>scripts\scr_wrapper_d3d_set_projection_ortho.gml</script>
+        <script>scripts\scr_wrapper_d3d_set_projection_perspective.gml</script>
+        <script>scripts\scr_wrapper_d3d_set_projection.gml</script>
+        <script>scripts\scr_wrapper_d3d_model_primitive_begin.gml</script>
+        <script>scripts\scr_wrapper_d3d_model_vertex_texture.gml</script>
+        <script>scripts\scr_wrapper_d3d_model_primitive_end.gml</script>
+        <script>scripts\scr_wrapper_d3d_model_destroy.gml</script>
+        <script>scripts\scr_wrapper_d3d_start.gml</script>
+        <script>scripts\scr_wrapper_d3d_set_fog.gml</script>
+        <script>scripts\scr_wrapper_d3d_set_lighting.gml</script>
+        <script>scripts\scr_wrapper_draw_text.gml</script>
+        <script>scripts\scr_wrapper_game_end.gml</script>
+        <script>scripts\scr_wrapper_keyboard_check.gml</script>
+        <script>scripts\scr_wrapper_set_keyboard_lastkey.gml</script>
+        <script>scripts\scr_wrapper_get_keyboard_lastkey.gml</script>
       </scripts>
+      <script>scripts\scr_initDelayedCallingDLL.gml</script>
+      <script>scripts\scr_get_DLL_function.gml</script>
+      <script>scripts\scr_call_DLL_function.gml</script>
     </scripts>
   </scripts>
   <shaders name="shaders">
