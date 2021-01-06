@@ -126,6 +126,7 @@ global.call_dll_function = external_define("CallDelayedFunctions.dll", "call_dll
 global.is_dll_function_call_complete = external_define("CallDelayedFunctions.dll", "is_dll_function_call_complete", dll_cdecl, ty_real, 0);
 global.prime_argument_real = external_define("CallDelayedFunctions.dll", "prime_argument_real", dll_cdecl, ty_real, 2, ty_real, ty_real);
 global.prime_argument_string = external_define("CallDelayedFunctions.dll", "prime_argument_string", dll_cdecl, ty_real, 2, ty_real, ty_string);
+global.get_dll_function_call_return_value = external_define("CallDelayedFunctions.dll", "get_dll_function_call_return_value", dll_cdecl, ty_real, 0);
 
 global.gameLoopInit = scr_get_DLL_function("CallDelayedFunctions.dll", "gameLoopInit");
 global.gameLoopStep = scr_get_DLL_function("CallDelayedFunctions.dll", "gameLoopStep");
