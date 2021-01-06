@@ -37,7 +37,7 @@ If you are interested in checking out our development progress, hop on over to o
 
 **M.S.T.O.P.** - FMODGMS
 
-**Snidr** - world_matrix_from_normal script
+**Snidr** - Snidr's Model Format
 
 **Venomous** - Bullet Collision DLL
 
