@@ -417,6 +417,18 @@ GMEXPORT double is_dll_function_call_complete()
  * \return
  *
  */
+GMEXPORT double get_dll_function_call_return_value()
+{
+    return function_return_value;
+}
+
+/** \brief
+ *
+ * \param
+ * \param
+ * \return
+ *
+ */
 GMEXPORT double init_dll_function_call_loop()
 {
     function_returned = 1;
