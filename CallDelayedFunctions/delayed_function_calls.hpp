@@ -11,3 +11,12 @@ GMEXPORT double setDelayedOutput(double value);
 GMEXPORT double getHasOutput();
 GMEXPORT double isThereDelayedFunctionCall();
 GMEXPORT double is_dll_function_call_complete();
+
+/** \brief
+ *
+ * \param
+ * \param
+ * \return
+ *
+ */
+GMEXPORT double get_dll_function_call_return_value();

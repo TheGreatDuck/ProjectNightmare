@@ -205,6 +205,11 @@ GMEXPORT double is_dll_function_call_complete()
     return function_returned;
 }
 
+GMEXPORT double get_dll_function_call_return_value()
+{
+    return function_return_value;
+}
+
 GMEXPORT double init_dll_function_call_loop()
 {
     function_returned = 1;
