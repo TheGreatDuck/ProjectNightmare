@@ -25,7 +25,9 @@ void main() {
     float lightAngleDifference = max(dot(worldNormal, lightDir), 0.);
     
     v_vColour = in_Colour * vec4(min(lightAmbient + lightColor * lightAngleDifference, vec4(1.)).rgb, in_Colour.a);
+    
     v_vTexcoord = in_TextureCoord;
+    
 }
 
 //######################_==_YOYO_SHADER_MARKER_==_######################@~//By DragoniteSpam
