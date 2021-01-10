@@ -61,11 +61,7 @@ with (objControl)
     {
         var addData = ds_list_create(), addActors = ds_list_create(), addTextures = ds_list_create(), addModels = ds_list_create(), addCShape = c_shape_create(), addCObj, roomData = ds_map_find_value(tempData, key), roomModel = roomData[| 0], roomActors = roomData[| 1];
         //Load actor data
-        repeat (ds_list_size(roomActors))
-        {
-            ds_list_add(addActors, roomActors[| 0]);
-            ds_list_delete(roomActors, 0);
-        }
+        ds_list_copy(addActors, roomActors);
         ds_list_destroy(roomActors);
         //Load room textures
         ds_list_add(addTextures, roomModel[| 9]); //Add the first triangle's texture to the world textures list
@@ -161,18 +157,15 @@ with (objControl)
         }
         c_shape_end_trimesh(addCShape);
         addCObj = c_object_create(addCShape, 1, 1);
-        ds_list_add(addData, addActors, addTextures, addModels);
+        ds_list_add(addData, addActors, addTextures, addModels, addCShape, addCObj);
         ds_list_mark_as_list(addData, 0);
         ds_list_mark_as_list(addData, 1);
         ds_list_mark_as_list(addData, 2);
-        ds_list_add(addData, addCShape, addCObj);
         ds_list_destroy(roomData);
         show_debug_message(key + ": " + string(addActors) + ", " + string(addTextures) + ", " + string(addModels) + ", " + string(addCShape) + ", " + string(addCObj));
-        var str = "Textures: ";
-        for (i = 0; i < ds_list_size(addTextures); i++) str += string(addTextures[| i]) + ", ";
-        show_debug_message(str);
         ds_map_add_list(global.worldData[0], real(key), addData);
     }
+    show_debug_message(string(ds_list_find_value(ds_list_find_value(ds_map_find_first(global.worldData[0]), 1), 0)));
     //All levels must start in the room ID 0. If this room doesn't exist, this will throw an error
     world_room_change(0, true);
     /*var dataSize = ds_list_size(tempData);
