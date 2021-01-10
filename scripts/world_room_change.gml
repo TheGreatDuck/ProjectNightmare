@@ -11,7 +11,7 @@ if (argument1) with (instance_create(0, 0, objCamera))
 }
 else
 {
-    with (objActor) if (object_index != objCamera && object_index != objMario) instance_destroy();
+    with (objActor) if ((object_index != objHoldable || target) && object_index != objCamera && object_index != objMario) instance_destroy();
     value = ds_map_find_value(global.worldData[0], global.levelRoom);
     c_world_remove_object(value[| 4]);
 }
@@ -19,7 +19,7 @@ global.levelRoom = argument0;
 value = ds_map_find_value(global.worldData[0], argument0);
 actors = value[| 0];
 c_world_add_object(value[| 4]);
-repeat (ds_list_size(actors) * 0.2)
+if !(is_undefined(actors)) repeat (ds_list_size(actors) * 0.2)
 {
     var actor = noone;
     switch (actors[| i + 4])
