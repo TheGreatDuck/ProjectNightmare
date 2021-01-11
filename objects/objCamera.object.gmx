@@ -128,18 +128,18 @@ if (target &amp;&amp; instance_exists(target))
     if !(cutscene_exists()) mouse_look(false);
     if (!cutscene_exists() || (cutscene_exists() &amp;&amp; global.follow))
     {
-        var tZ = previousZ, lookVec = lengthdir_y(8, target.moveDir);
+        var tZ = previousZ;
         if (target.z &lt; previousZ - 10|| target.z &gt; previousZ + 40) tZ = target.z;
         if (target.fOnGround &amp;&amp; target.shadowZ != -65536) previousZ = target.shadowZ + target.half;
-        var rangeTo = 80, zTo = max(tZ, target.shadowZ) + 16, camZTo = zTo - 2, lookX = lengthdir_x(lookVec, faceDir + 90), lookY = lengthdir_y(lookVec, faceDir + 90);
-        if (c_raycast_world(target.x, target.y, zTo, target.x - lengthdir_x(80, faceDir) - lookX, target.y - lengthdir_y(80, faceDir) - lookY, zTo, 1))
+        var rangeTo = 80, zTo = max(tZ, target.shadowZ) + 16, camZTo = zTo - 2;
+        if (c_raycast_world(target.x, target.y, zTo, target.x - lengthdir_x(80, faceDir), target.y - lengthdir_y(80, faceDir), zTo, 1))
         {
             rangeTo = point_distance_3d(target.x, target.y, target.z, c_hit_x(), c_hit_y(), c_hit_z());
             camZTo = zTo + (target.z - tZ) / (point_distance(x, y, target.x, target.y) / 16) - 10;
         }
         range = lerp(range, rangeTo, 0.2);
-        x = target.x - lengthdir_x(range, faceDir) - lookX;
-        y = target.y - lengthdir_y(range, faceDir) - lookY;
+        x = target.x - lengthdir_x(range, faceDir);
+        y = target.y - lengthdir_y(range, faceDir);
         z = lerp(z, max(zTo, global.minZ), 0.2);
         facePitch = lerp_angle(facePitch, point_pitch(x, y, z, target.x, target.y, camZTo), 0.2);
         global.cX = x;
@@ -294,7 +294,7 @@ if (target &amp;&amp; instance_exists(target))
 draw_set_color(c_white);
 var realPitch = facePitch;
 if (mode == 1) realPitch = clamp(facePitch + flinch, -89.5, 89.5); //Add flinching if first person mode
-var cCos = dcos(global.cD), cSin = dsin(global.cD), cTan = dtan(realPitch), i = 0;
+var cCos = dcos(global.cD), cSin = dsin(global.cD), cTan = dtan(realPitch);
 d3d_set_projection_ext(global.cX, global.cY, global.cZ, global.cX + cCos, global.cY - cSin, global.cZ + cTan, 0, 0, 1, 45, view_wview[0] / view_hview[0], 1, global.maxRender);
 audio_listener_position(global.cX, global.cY, global.cZ);
 audio_listener_orientation(cCos, -cSin, cTan, 0, 0, 1);
@@ -314,10 +314,10 @@ shader_set_uniform_f(shader_get_uniform(shWorld, "fogColor"), global.fog[2], glo
 shader_set_uniform_f(shader_get_uniform(shWorld, "lightDirection"), global.light[0], global.light[1], global.light[2]);
 shader_set_uniform_f(shader_get_uniform(shWorld, "lightColor"), global.light[3], global.light[4], global.light[5], 1);
 shader_set_uniform_f(shader_get_uniform(shWorld, "lightAmbient"), global.light[6], global.light[7], global.light[8], 1);
-i = 0;
-repeat (ds_list_size(global.worldModel[0]))
+var i = 0, roomData = ds_map_find_value(global.worldData[0], global.levelRoom), roomTextures = roomData[| 1], roomModels = roomData[| 2];
+repeat (ds_list_size(roomModels))
 {
-    vertex_submit(ds_list_find_value(global.worldModel[0], i), pr_trianglelist, texture_get(ds_list_find_value(global.worldModel[1], i)));
+    vertex_submit(roomModels[| i], pr_trianglelist, texture_get(roomTextures[| i]));
     i++;
 }
 shader_reset();
@@ -423,7 +423,7 @@ with (objActor)
     }
     if (fShadow &amp;&amp; shadowZ != -65536 &amp;&amp; global.cZ &gt; shadowZ)
     {
-        matrix_set(matrix_world, shadowMatrix);
+        matrix_set(matrix_world, matrix_build(x, y, shadowZ, 0, floorPitch, floorAngle, 1, 1, 1));
         var shadowSize = 2 * radius;
         draw_image_stretched_ext(global.bg[| cBgShadow], 0, -radius, -radius, shadowSize, shadowSize, c_white, 0.5);
     }

@@ -466,9 +466,6 @@ while (file != "")
 file_find_close();
 //Prepare 3D collision system
 c_init();
-worldShape = -1;
-worldObject = -1;
-global.world = -1;
 //Level properties
 for (i = 0; i &lt; 2; i++)
 {
@@ -477,20 +474,23 @@ for (i = 0; i &lt; 2; i++)
     global.channel[i] = FMODGMS_Chan_CreateChannel();
     global.levelMusic[i] = noone;
     global.musicVolume[i] = !i;
-    /*global.worldModel has a list of vertex buffers that are rendered by using a fake "vertex batching" method
-    to give the illusion of displaying multiple textures on one vertex buffer. Under the hood, it's only
-    rendering multiple vertex buffers as parts of the world, depending on how many textures are used in the map.
-    global.worldModel[0] contains world model segments
-    global.worldModel[1] contains the texture ID for each segment
-    global.worldModel[2] contains the format used by vertex buffers*/
-    global.worldModel[i] = ds_list_create();
 }
+/*global.worldData[0] is a ds_map that contains world data using the following format:
+    key = room ID
+    value = room data list, where the following positions contain:
+            0 = actors list
+            1 = texture IDs list
+            2 = world models list
+            3 = collision shape
+            4 = collision object
+global.worldData[1] contains the vertex buffer format*/
+global.worldData[0] = ds_map_create();
 vertex_format_begin();
 vertex_format_add_position_3d();
 vertex_format_add_normal();
 vertex_format_add_textcoord();
 vertex_format_add_color();
-global.worldModel[2] = vertex_format_end();
+global.worldData[1] = vertex_format_end();
 global.fog[0] = 0;
 global.fog[1] = 65536;
 for (i = 2; i &lt; 5; i++) global.fog[i] = 0;
@@ -510,6 +510,7 @@ global.deltaTime = 60 / 1000000 * delta_time;
 global.currentRoom = -2; /*PN uses a different room system to get around the memory leak issues with GameMaker: Studio 1.4 involving rooms.
 When you change or restart rooms, the game would leak ~3 KB of memory.
 As a workaround, only one room must be utilized during the whole session.*/
+global.levelRoom = 0; //This is the current 
 global.particles = ds_list_create(); /*PN uses a particles list to iterate through each particles (which is a list of data). Should be marginally faster than objects.*/
 pauseBg = -1;
 pauseX = -463;
@@ -846,6 +847,31 @@ window_set_fullscreen(!getFull);
           <argument>
             <kind>1</kind>
             <string>display_reset((display_aa != 4) * 4, false);
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="9" enumb="80">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>var key = ds_map_find_next(global.worldData[0], global.levelRoom);
+if (is_undefined(key)) key = ds_map_find_first(global.worldData[0]);
+world_room_change(key, false);
 </string>
           </argument>
         </arguments>
