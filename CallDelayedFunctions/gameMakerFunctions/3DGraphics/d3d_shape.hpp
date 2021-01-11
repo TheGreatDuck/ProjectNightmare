@@ -1,9 +1,9 @@
-void d3d_draw_block(double x1, double y1, double z1, double x2, double y2, double z2, double texid, int hrepeat, int vrepeat);
-void d3d_draw_cylinder(double x1, double y1, double z1, double x2, double y2, double z2, double texid, int hrepeat, int vrepeat, int closed, int steps);
-void d3d_draw_cone(double x1, double y1, double z1, double x2, double y2, double z2, double texid, int hrepeat, int vrepeat, int closed, int steps);
-void d3d_draw_ellipsoid(double x1, double y1, double z1, double x2, double y2, double z2, double texid, int hrepeat, int vrepeat, int steps);
-void d3d_draw_wall(double x1, double y1, double z1, double x2, double y2, double z2, double texid, int hrepeat, int vrepeat);
-void d3d_draw_floor(double x1, double y1, double z1, double x2, double y2, double z2, double texid, int hrepeat, int vrepeat);
+void d3d_draw_block(double x1, double y1, double z1, double x2, double y2, double z2, double texid, double hrepeat, double vrepeat);
+void d3d_draw_cylinder(double x1, double y1, double z1, double x2, double y2, double z2, double texid, double hrepeat, double vrepeat, double closed, double steps);
+void d3d_draw_cone(double x1, double y1, double z1, double x2, double y2, double z2, double texid, double hrepeat, double vrepeat, double closed, double steps);
+void d3d_draw_ellipsoid(double x1, double y1, double z1, double x2, double y2, double z2, double texid, double hrepeat, double vrepeat, double steps);
+void d3d_draw_wall(double x1, double y1, double z1, double x2, double y2, double z2, double texid, double hrepeat, double vrepeat);
+void d3d_draw_floor(double x1, double y1, double z1, double x2, double y2, double z2, double texid, double hrepeat, double vrepeat);
 void d3d_set_projection_ortho(double x, double y, double w, double h, double angle);
 void d3d_set_projection_perspective(double x, double y, double w, double h, double angle);
 void d3d_set_projection(double xfrom, double yfrom, double zfrom, double xto, double yto, double zto, double xup, double yup, double zup);

@@ -1,1 +1,1 @@
-void draw_text(int x, int y, const char* text_string);
+void draw_text(double x, double y, const char* text_string);

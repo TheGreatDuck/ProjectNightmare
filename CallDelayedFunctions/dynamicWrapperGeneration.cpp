@@ -1,51 +1,88 @@
 #include <stdio.h>
 #include <malloc.h>
 #include <string.h>
+#include <stdbool.h>
 //rs
 
-int walk_function(FILE* inputFile, FILE* outputFile, FILE* outputFile2)
+void no_pump_input(FILE* inputFile, const char* match)
 {
-    int began = 0;
-    int ended = 0;
-    int c = fgetc(inputFile);
+    int c;
+    int length = strlen(match);
+    char* matchCheck = (char*)alloca(sizeof(*matchCheck)*length);
+    memset(matchCheck, 0, sizeof(*matchCheck)*length);
 
-    while (!ended && c != EOF)
+    while ((c = fgetc(inputFile)) != EOF)
     {
-        if (c == ' ')
+        for (int i = 0; i < length-1; i++)
         {
-            ended = began;
-            began = 1;
+            matchCheck[i] = matchCheck[i+1];
         }
-        c = fgetc(inputFile);
+        matchCheck[length-1] = c;
+
+        if (!memcmp(match, matchCheck, length))
+            return;
     }
+}
 
-    if (c == EOF)
-        return c == EOF;
+void pump_input_till_eof(FILE* inputFile, FILE* outputFile)
+{
+    int c;
 
-    began = 0;
-    ended = 0;
+    while ((c = fgetc(inputFile)) != EOF)
+        fputc(c, outputFile);
+}
 
-    char* functionName = (char*)malloc(sizeof(char));
+void pump_input(FILE* inputFile, FILE* outputFile, const char* match)
+{
+    int c;
+    int length = strlen(match);
+    char* matchCheck = (char*)alloca(sizeof(*matchCheck)*length);
+    memset(matchCheck, 0, sizeof(*matchCheck)*length);
+
+    while ((c = fgetc(inputFile)) != EOF)
+    {
+        for (int i = 0; i < length-1; i++)
+        {
+            matchCheck[i] = matchCheck[i+1];
+        }
+        matchCheck[length-1] = c;
+        fputc(c, outputFile);
+        if (!memcmp(match, matchCheck, length))
+            return;
+    }
+}
+
+char* getFunctionName(FILE* inputFile)
+{
+    char* functionName = (char*)malloc(sizeof(*functionName));
     functionName[0] = 0;
     int functionNameLength = 0;
+    int c;
 
-    while (!ended && c != EOF)
+    while ((c = fgetc(inputFile)) != EOF)
     {
         if (c == '(')
+            break;
+        else
         {
-            ended = 1;
-        } else
-        {
-            char* tempFunctionName = (char*)malloc((functionNameLength+2)*sizeof(char));
-            strcpy(tempFunctionName, functionName);
-            tempFunctionName[functionNameLength] = c;
-            tempFunctionName[functionNameLength+1] = 0;
-            free(functionName);
-            functionName = tempFunctionName;
+            functionName = (char*)realloc(functionName, sizeof(functionName)*(functionNameLength+2));
+            functionName[functionNameLength] = c;
+            functionName[functionNameLength+1] = 0;
             functionNameLength++;
         }
-        c = fgetc(inputFile);
     }
+
+    return functionName;
+}
+
+bool walk_DLL_function(FILE* inputFile, FILE* outputFile, FILE* outputFile2)
+{
+    if (fscanf(inputFile, "%*[^ ])") == EOF) return 1;
+    if (fscanf(inputFile, "%*1[ ]%*[^ ])") == EOF) return 1;
+    if (fgetc(inputFile) != ' ') return 1;
+
+    int c;
+    char* functionName = getFunctionName(inputFile);
 
     fprintf(outputFile, "GMEXPORT double get_%s()\n", functionName);
     fprintf(outputFile, "{\n");
@@ -57,14 +94,12 @@ int walk_function(FILE* inputFile, FILE* outputFile, FILE* outputFile2)
 
     int argumentCount = 0;
     int waitingTillComma = 0;
-    ended = 0;
 
-    while (!ended && c != EOF)
+    while ((c = fgetc(inputFile)) != EOF)
     {
         if (c == ')')
-        {
-            ended = 1;
-        } else if (c == 'd' && !waitingTillComma)
+            break;
+        else if (c == 'd' && !waitingTillComma)
         {
             fprintf(outputFile2, "dll_input[%u].number", argumentCount);
             waitingTillComma = 1;
@@ -79,193 +114,179 @@ int walk_function(FILE* inputFile, FILE* outputFile, FILE* outputFile2)
             fprintf(outputFile2, ", ");
             waitingTillComma = 0;
         }
-        c = fgetc(inputFile);
     }
 
     fprintf(outputFile2, ");\n");
     return c == EOF;
 }
 
-int walk_GML_function(FILE* inputFile, FILE* outputFile, FILE* outputFile2)
+bool walk_GML_function(FILE* inputFile, FILE* outputFile, FILE* outputFile2, FILE* projectFileOut)
 {
-    int ended = 0;
     int functionType = 2;
-    int c = fgetc(inputFile);
+    int c;
 
-    while (!ended && c != EOF)
+    while ((c = fgetc(inputFile)) != EOF)
     {
         if (c == ' ')
-        {
-            ended = 1;
-        } else if (c == 'v' && functionType == 2)
-        {
+            break;
+        else if (c == 'v' && functionType == 2)
             functionType = 0;
-        } else if (c == 'd' && functionType == 2)
-        {
+        else if (c == 'd' && functionType == 2)
             functionType = 1;
-        }
-        c = fgetc(inputFile);
     }
 
     if (c == EOF)
         return c == EOF;
 
-    ended = 0;
+    char* functionName = getFunctionName(inputFile);
 
-    char* functionName = (char*)malloc(sizeof(char));
-    functionName[0] = 0;
-    int functionNameLength = 0;
-
-    while (!ended && c != EOF)
-    {
-        if (c == '(')
-        {
-            ended = 1;
-        } else
-        {
-            char* tempFunctionName = (char*)malloc((functionNameLength+2)*sizeof(char));
-            strcpy(tempFunctionName, functionName);
-            tempFunctionName[functionNameLength] = c;
-            tempFunctionName[functionNameLength+1] = 0;
-            free(functionName);
-            functionName = tempFunctionName;
-            functionNameLength++;
-        }
-        c = fgetc(inputFile);
-    }
-
+    fprintf(projectFileOut, "\n        <script>scripts\\scr_wrapper_%s.gml</script>", functionName);
     fprintf(outputFile, "ADD_FUNCTION(%s)\n", functionName);
+
+    fprintf(outputFile2, "global.delayCallDLL_export_%s = external_define(\"CallDelayedFunctions.dll\", \"export_%s\", dll_cdecl, ty_real, 1, ty_real);\n", functionName, functionName);
+    fprintf(outputFile2, "external_call(global.delayCallDLL_export_%s, scr_wrapper_%s);\n", functionName, functionName);
 
     int argumentCount = 0;
     int* argumentType = NULL;
     int waitingTillComma = 0;
-    ended = 0;
 
-    while (!ended && c != EOF)
+    while ((c = fgetc(inputFile)) != EOF)
     {
         if (c == ')')
+            break;
+        else if (c == 'd' && !waitingTillComma)
         {
-            ended = 1;
-        } else if (c == 'd' && !waitingTillComma)
-        {
-            int* argumentTypeTemp = (int*)malloc((argumentCount+1)*sizeof(int));
-            memcpy(argumentTypeTemp, argumentType, argumentCount*sizeof(int));
-            argumentTypeTemp[argumentCount] = 0;
-            free(argumentType);
-            argumentType = argumentTypeTemp;
+            argumentType = (int*)realloc(argumentType, sizeof(*argumentType)*(argumentCount+1));
+            argumentType[argumentCount] = 0;
             waitingTillComma = 1;
             argumentCount++;
         } else if (c == 'c' && !waitingTillComma)
         {
-            int* argumentTypeTemp = (int*)malloc((argumentCount+1)*sizeof(int));
-            memcpy(argumentTypeTemp, argumentType, argumentCount*sizeof(int));
-            argumentTypeTemp[argumentCount] = 1;
-            free(argumentType);
-            argumentType = argumentTypeTemp;
+            argumentType = (int*)realloc(argumentType, sizeof(*argumentType)*(argumentCount+1));
+            argumentType[argumentCount] = 1;
+            waitingTillComma = 1;
             argumentCount++;
         } else if (c == ',' && waitingTillComma)
-        {
             waitingTillComma = 0;
-        }
-
-        c = fgetc(inputFile);
     }
 
     if (functionType == 0)
-    {
-        fprintf(outputFile2, "void %s(", functionName);
-    } else if (functionType == 1)
-    {
-        fprintf(outputFile2, "double %s(", functionName);
-    }
+        fprintf(outputFile, "void %s(", functionName);
+    else if (functionType == 1)
+        fprintf(outputFile, "double %s(", functionName);
 
     for (int i = 0; i < argumentCount; i++)
     {
         if (argumentType[i] == 0)
-        {
-            fprintf(outputFile2, "double input%u", i);
-        } else if (argumentType[i] == 1)
-        {
-            fprintf(outputFile2, "const char* input%u", i);
-        }
+            fprintf(outputFile, "double input%u", i);
+        else if (argumentType[i] == 1)
+            fprintf(outputFile, "const char* input%u", i);
 
         if (i+1 < argumentCount)
-        {
-            fprintf(outputFile2, ", ");
-        }
+            fprintf(outputFile, ", ");
     }
 
-    fprintf(outputFile2, ")\n");
-    fprintf(outputFile2, "{\n");
+    fprintf(outputFile, ")\n");
+    fprintf(outputFile, "{\n");
 
     if (functionType == 0)
-    {
-        fprintf(outputFile2, "    addDelayedFunctionCall(FP_%s, 0", functionName);
-    } else if (functionType == 1)
-    {
-        fprintf(outputFile2, "    return addDelayedFunctionCall(FP_%s, 1", functionName);
-    }
+        fprintf(outputFile, "    addDelayedFunctionCall(FP_%s, 0", functionName);
+    else if (functionType == 1)
+        fprintf(outputFile, "    return addDelayedFunctionCall(FP_%s, 1", functionName);
+
+    for (int i = 0; i < argumentCount; i++)
+        fprintf(outputFile, ", input%u", i);
+
+    fprintf(outputFile, ");\n");
+    fprintf(outputFile, "}\n");
+
+    char* scriptFileName = (char*)alloca(strlen("..\\scripts\\scr_wrapper_") + strlen(functionName) + strlen(".gml"));
+    scriptFileName[0] = '\0';
+    strcat(scriptFileName, "..\\scripts\\scr_wrapper_");
+    strcat(scriptFileName, functionName);
+    strcat(scriptFileName, ".gml");
+    FILE* scriptFile = fopen(scriptFileName, "w");
+
+    if (functionType == 0)
+        fprintf(scriptFile, "%s(", functionName);
+    else if (functionType == 1)
+        fprintf(scriptFile, "return %s(", functionName);
 
     for (int i = 0; i < argumentCount; i++)
     {
-        fprintf(outputFile2, ", input%u", i);
+        fprintf(scriptFile, "argument[%u]", i);
+
+        if (i+1 < argumentCount)
+            fprintf(scriptFile, ",");
     }
 
-    fprintf(outputFile2, ");\n");
-    fprintf(outputFile2, "}\n");
+    fprintf(scriptFile, ");\n");
+
     return c == EOF;
 }
 
-void parse_GML_header(FILE* outputFile, char* inputFileName)
+void walk_GML_header(FILE* outputFile, FILE* outputFile2, FILE* projectFileOut, const char* inputFileName)
 {
     FILE* inputFile = fopen(inputFileName, "r");
 
-    while (1)
-    {
-        if (walk_GML_function(inputFile, outputFile, outputFile))
-        {
-            return;
-        }
-    }
+    while (!walk_GML_function(inputFile, outputFile, outputFile2, projectFileOut))
+        ;
 }
 
-void parse_GML_libraries()
+void walk_GML_libraries(FILE* projectFileOut)
 {
-    char* outputFileName = "gameMakerGenLibrary.hpp";
-    FILE* outputFile = fopen(outputFileName, "w");
+    FILE* outputFile = fopen("gameMakerGenLibrary.hpp", "w");
+    FILE* outputFile2 = fopen("..\\scripts\\scr_delayCallDLL_exportWrapperFunctions.gml", "w");
 
-    parse_GML_header(outputFile, "gameMakerFunctions\\3DGraphics\\d3d_model.hpp");
-    parse_GML_header(outputFile, "gameMakerFunctions\\3DGraphics\\d3d_primitive.hpp");
-    parse_GML_header(outputFile, "gameMakerFunctions\\3DGraphics\\d3d_shape.hpp");
-    parse_GML_header(outputFile, "gameMakerFunctions\\3DGraphics\\d3d_transform.hpp");
+    walk_GML_header(outputFile, outputFile2, projectFileOut, "gameMakerFunctions\\3DGraphics\\d3d_model.hpp");
+    walk_GML_header(outputFile, outputFile2, projectFileOut, "gameMakerFunctions\\3DGraphics\\d3d_primitive.hpp");
+    walk_GML_header(outputFile, outputFile2, projectFileOut, "gameMakerFunctions\\3DGraphics\\d3d_shape.hpp");
+    walk_GML_header(outputFile, outputFile2, projectFileOut, "gameMakerFunctions\\3DGraphics\\d3d_transform.hpp");
 
-    parse_GML_header(outputFile, "gameMakerFunctions\\gameGraphics\\fontsAndText.hpp");
+    walk_GML_header(outputFile, outputFile2, projectFileOut, "gameMakerFunctions\\gameGraphics\\fontsAndText.hpp");
 
-    parse_GML_header(outputFile, "gameMakerFunctions\\userInteraction\\mouse.hpp");
-    parse_GML_header(outputFile, "gameMakerFunctions\\userInteraction\\keyboard.hpp");
-    parse_GML_header(outputFile, "gameMakerFunctions\\userInteraction\\joystick.hpp");
+    walk_GML_header(outputFile, outputFile2, projectFileOut, "gameMakerFunctions\\userInteraction\\mouse.hpp");
+    walk_GML_header(outputFile, outputFile2, projectFileOut, "gameMakerFunctions\\userInteraction\\keyboard.hpp");
+    walk_GML_header(outputFile, outputFile2, projectFileOut, "gameMakerFunctions\\userInteraction\\joystick.hpp");
 
-    parse_GML_header(outputFile, "gameMakerFunctions\\gamePlay\\rooms.hpp");
+    walk_GML_header(outputFile, outputFile2, projectFileOut, "gameMakerFunctions\\gamePlay\\rooms.hpp");
 }
 
 int main()
 {
-    char* inputFileName = "gameLoop.hpp";
-    FILE* inputFile = fopen(inputFileName, "r");
+    FILE* inputFile = fopen("gameLoop.hpp", "r");
+    FILE* outputFile = fopen("getGameLoop.hpp", "w");
+    FILE* outputFile2 = fopen("callGameLoop.hpp", "w");
 
-    char* outputFileName = "getGameLoop.hpp";
-    FILE* outputFile = fopen(outputFileName, "w");
+    FILE* projectFileIn = fopen("ProjectNightmare.project.gmx", "r");
+    FILE* projectFileOut = fopen("..\\ProjectNightmare.project.gmx", "w");
+    pump_input(projectFileIn, projectFileOut, "<scripts name=\"GML Calling DLL Interface\">");
+    fprintf(projectFileOut, "\n      <scripts name=\"Internal\">");
+    fprintf(projectFileOut, "\n        <script>scripts\\scr_delayCallDLL_getInput.gml</script>");
+    fprintf(projectFileOut, "\n        <script>scripts\\scr_delayCallDLL_exportWrapperFunctions.gml</script>");
+    fprintf(projectFileOut, "\n        <script>scripts\\scr_delayCallDLL_callQueuedFunctions.gml</script>");
+    fprintf(projectFileOut, "\n        <script>scripts\\scr_delayCallDLL_removeDelayedFunctionCall.gml</script>");
+    fprintf(projectFileOut, "\n        <script>scripts\\scr_delayCallDLL_getInputDelayedVariable.gml</script>");
+    fprintf(projectFileOut, "\n        <script>scripts\\scr_delayCallDLL_getInputText.gml</script>");
+    fprintf(projectFileOut, "\n        <script>scripts\\scr_delayCallDLL_getInputNumber.gml</script>");
+    fprintf(projectFileOut, "\n        <script>scripts\\scr_delayCallDLL_getInputType.gml</script>");
+    fprintf(projectFileOut, "\n        <script>scripts\\scr_delayCallDLL_getFunction.gml</script>");
+    fprintf(projectFileOut, "\n        <script>scripts\\scr_delayCallDLL_setDelayedOutput.gml</script>");
+    fprintf(projectFileOut, "\n        <script>scripts\\scr_delayCallDLL_getHasOutput.gml</script>");
+    fprintf(projectFileOut, "\n        <script>scripts\\scr_delayCallDLL_isThereDelayedFunctionCall.gml</script>");
+    fprintf(projectFileOut, "\n      </scripts>");
+    fprintf(projectFileOut, "\n      <scripts name=\"Wrapper Functions\">");
 
-    char* outputFileName2 = "callGameLoop.hpp";
-    FILE* outputFile2 = fopen(outputFileName2, "w");
+    while (!walk_DLL_function(inputFile, outputFile, outputFile2))
+        ;
 
-    while (1)
-    {
-        if (walk_function(inputFile, outputFile, outputFile2))
-        {
-            break;
-        }
-    }
+    walk_GML_libraries(projectFileOut);
 
-    parse_GML_libraries();
+    no_pump_input(projectFileIn, "\n    </scripts>\n");
+    fprintf(projectFileOut, "\n      </scripts>");
+    fprintf(projectFileOut, "\n      <script>scripts\\scr_initDelayedCallingDLL.gml</script>");
+    fprintf(projectFileOut, "\n      <script>scripts\\scr_get_DLL_function.gml</script>");
+    fprintf(projectFileOut, "\n      <script>scripts\\scr_call_DLL_function.gml</script>");
+    fprintf(projectFileOut, "\n    </scripts>\n");
+    pump_input_till_eof(projectFileIn, projectFileOut);
 }
