@@ -21,6 +21,10 @@ If you are interested in checking out our development progress, hop on over to o
 
 **ReflexGURU** - programming, beta testing
 
+### [CONTRIBUTORS]
+
+**Typhon** - Delayed Function Calling DLL
+
 ### [THIRD-PARTIES]
 
 **Aouab** - Discord Rich Presence for GameMaker
