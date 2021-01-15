@@ -30,6 +30,7 @@
 hp = 0;
 target = noone;
 //Flags
+uID = noone; //Used to prevent duplication across room transition i.e. having a clone of a holdable from a previous room.
 fOnGround = true; //Used to check if the actor is on the ground, to do specific things.
 fGravity = true;
 fGhost = false; //Turn on if you don't want the actor to have collision checking.
