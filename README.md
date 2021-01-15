@@ -49,10 +49,11 @@ If you are interested in checking out our development progress, hop on over to o
 
 
 # DISCLAIMER
-This is an unofficial fan game.
+This is an unofficial non-profit fan game.
 This game is open-sourced and freeware, and will always be.
 
-I do not hold any licenses nor copyrights. This game must NOT be sold.
+We do not hold any licenses nor copyrights. This game must NOT be sold.
 "If somebody sold you that game, please call the nearest government police station, and pray they dont work for Bill Gates" (sic)
 
-Mario, Link and other related characters are a copyright of Nintendo.
+Mario, Link and other related characters © Nintendo
+FMOD © Firelight Technologies
