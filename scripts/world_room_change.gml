@@ -53,7 +53,11 @@ if !(is_undefined(actors)) repeat (ds_list_size(actors) * 0.2)
         {
             uID = i;
             z = actors[| i + 2] + half;
-            if (actor == objMario) (instance_create(x, y, objZapper)).z = z;
+            if (actor == objMario)
+            {
+                (instance_create(x, y, objZapper)).z = z;
+                (instance_create(x, y, objDummy)).z = z;
+            }
             faceDir = actors[| i + 3];
         }
     }

@@ -125,16 +125,11 @@ switch (anim)
         if (onGround)
         {
             if (spd &gt; 0.1)
-                if (spd &gt; 1.25)
-                {
-                    anim = cAniMarioRun;
-                    frameSpd = spd * 0.125;
-                }
-                else
-                {
-                    anim = cAniMarioWalk;
-                    frameSpd = spd * 0.4;
-                }
+            {
+                if (spd &gt; 1.25) anim = cAniMarioRun;
+                else anim = cAniMarioWalk;
+                frameSpd = spd * 0.25;
+            }
             else
             {
                 anim = cAniMarioIdle;

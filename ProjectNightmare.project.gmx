@@ -427,6 +427,7 @@
       <object>objects\objBomb</object>
       <object>objects\objZapper</object>
       <object>objects\objNPC</object>
+      <object>objects\objDummy</object>
     </objects>
     <objects name="Special">
       <objects name="Parents">

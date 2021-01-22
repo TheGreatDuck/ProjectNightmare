@@ -19,6 +19,7 @@ vertex_format_add_normal();         SMF_format_bytes += 3 * 4; //Adds three f32
 vertex_format_add_textcoord();       SMF_format_bytes += 2 * 4; //Adds two f32
 vertex_format_add_colour();          SMF_format_bytes += 1 * 4; //Adds four u8
 vertex_format_add_colour();          SMF_format_bytes += 1 * 4; //Adds four u8
+vertex_format_add_colour(); //World model vertex color (not in vanilla SMF)
 SMF_format = vertex_format_end();
 
 //---------------Animation module------------------\\

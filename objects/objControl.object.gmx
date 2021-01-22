@@ -152,7 +152,7 @@ while (file != "")
     var list = ds_list_create(), slot = string_digits(file), table = file_text_open_read(cDirSpr + "ani.txt"), frames = 1, rotates = false, xOfs = 0, yOfs = 0, info;
     while !(file_text_eof(table)) //Look for animation data in the animation data table
     {
-        info = string_parse(level_read_string(table), "|");
+        info = string_parse(level_read_string(table));
         if (info[| 0] == slot) //If the parsed string belongs to this sprite...
         {
             frames = real(info[| 1]); //Set amount of frames this sprite has
@@ -223,7 +223,7 @@ for (i = 0; i &lt; ds_list_size(global.spr); i++)
         {
             str = level_read_string(table);
             if (string_copy(str, 1, 1) != "0") continue //Ignore all strings that don't have the "submodel" header (0)
-            info = string_parse(str, "|");
+            info = string_parse(str);
             if (info[| 1] == slot) //If the parsed string belongs to this submodel...
             {
                 for (var j = 2; j &lt; ds_list_size(info); j++) ds_list_add(list, real(info[| j])); //Add all skins from the list
@@ -251,7 +251,7 @@ for (i = 0; i &lt; ds_list_size(global.spr); i++)
         {
             str = level_read_string(table);
             if (string_copy(str, 1, 1) != "1") continue //Ignore all strings that don't have the "bodygroup" header (1)
-            info = string_parse(str, "|");
+            info = string_parse(str);
             if (info[| 1] == file) //If the parsed string belongs to this bodygroup...
             {
                 ds_list_add(list, real(info[| 2])); //Add bodygroup material from parsed string
@@ -289,7 +289,7 @@ for (i = 0; i &lt; ds_list_size(global.spr); i++)
             {
                 str = level_read_string(table);
                 if (string_copy(str, 1, 1) != "2") continue //Ignore all strings that don't have the "animation" header (2)
-                info = string_parse(str, "|");
+                info = string_parse(str);
                 if (info[| 1] == slot) //If the parsed string belongs to this submodel...
                 {
                     type = real(info[| 2]); //Get animation keyframe cycle type
@@ -350,7 +350,7 @@ while (file != "")
     var slot = string_digits(file), table = file_text_open_read(cDirTex + "ani.txt"), frames = 1, spd = 1, info;
     while !(file_text_eof(table)) //Look for animation data in the animation data table
     {
-        info = string_parse(file_text_read_string(table), "|");
+        info = string_parse(file_text_read_string(table));
         if (info[| 0] == slot) //If the parsed string belongs to this texture...
         {
             frames = real(info[| 1]); //Set amount of frames this texture has
@@ -448,7 +448,7 @@ while (file != "")
     var table = file_text_open_read(cDirBgm + "loop.txt"), info;
     while !(file_text_eof(table)) //Look for loop points in the music data table
     {
-        info = string_parse(file_text_read_string(table), "|");
+        info = string_parse(file_text_read_string(table));
         if (info[| 0] == slot) //If the parsed string belongs to this track...
         {
             FMODGMS_Snd_Set_LoopPoints(track, FMODGMS_Util_SecondsToSamples(real(info[| 1]), 44100), FMODGMS_Util_SecondsToSamples(real(info[| 2]), 44100)); //Set loop points for track

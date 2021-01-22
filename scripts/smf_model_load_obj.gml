@@ -27,58 +27,58 @@ fl = ds_list_create();
 file = file_text_open_read(filename);
 while !file_text_eof(file)
 {
-	str = string_replace_all(file_text_read_string(file),"  "," ");
-	type = string_copy(str, 1, 2);
-	str = string_delete(str, 1, string_pos(" ", str));
-	switch type
-	{
-		case "v ":
-			ds_list_add(vx, real(string_copy(str, 1, string_pos(" ", str))));
-	        str = string_delete(str, 1, string_pos(" ", str));     
-			ds_list_add(vy, real(string_copy(str, 1, string_pos(" ", str))));  
-			ds_list_add(vz, real(string_delete(str, 1, string_pos(" ", str))));
-			break;
-		case "vn":
-			ds_list_add(nx, real(string_copy(str, 1, string_pos(" ", str))));
-	        str = string_delete(str, 1, string_pos(" ", str)); 
-			ds_list_add(ny, real(string_copy(str, 1, string_pos(" ", str))));
-			ds_list_add(nz, real(string_delete(str, 1, string_pos(" ", str))));
-			break;
-		case "vt":
-			ds_list_add(tx, real(string_copy(str, 1, string_pos(" ", str))));
-			ds_list_add(ty, real(string_delete(str, 1, string_pos(" ", str))));
-			break;
-		case "f ":
-	        if (string_char_at(str, string_length(str)) == " "){str = string_copy(str, 0, string_length(str) - 1);}
-	        triNum = string_count(" ", str);
-	        for (i = 0; i < triNum; i ++){
-	            vertString[i] = string_copy(str, 1, string_pos(" ", str));
-	            str = string_delete(str, 1, string_pos(" ", str));}
-			vertString[i--] = str;
-	        while i--{for (j = 2; j >= 0; j --){ds_list_add(fl, vertString[(i + j) * (j > 0)]);}}
-			break;
-		}
+str = string_replace_all(file_text_read_string(file),"  "," ");
+type = string_copy(str, 1, 2);
+str = string_delete(str, 1, string_pos(" ", str));
+switch type
+{
+case "v ":
+ds_list_add(vx, real(string_copy(str, 1, string_pos(" ", str))));
+        str = string_delete(str, 1, string_pos(" ", str));     
+ds_list_add(vy, real(string_copy(str, 1, string_pos(" ", str))));  
+ds_list_add(vz, real(string_delete(str, 1, string_pos(" ", str))));
+break;
+case "vn":
+ds_list_add(nx, real(string_copy(str, 1, string_pos(" ", str))));
+        str = string_delete(str, 1, string_pos(" ", str)); 
+ds_list_add(ny, real(string_copy(str, 1, string_pos(" ", str))));
+ds_list_add(nz, real(string_delete(str, 1, string_pos(" ", str))));
+break;
+case "vt":
+ds_list_add(tx, real(string_copy(str, 1, string_pos(" ", str))));
+ds_list_add(ty, real(string_delete(str, 1, string_pos(" ", str))));
+break;
+case "f ":
+        if (string_char_at(str, string_length(str)) == " "){str = string_copy(str, 0, string_length(str) - 1);}
+        triNum = string_count(" ", str);
+        for (i = 0; i < triNum; i ++){
+            vertString[i] = string_copy(str, 1, string_pos(" ", str));
+            str = string_delete(str, 1, string_pos(" ", str));}
+vertString[i--] = str;
+        while i--{for (j = 2; j >= 0; j --){ds_list_add(fl, vertString[(i + j) * (j > 0)]);}}
+break;
+}
     file_text_readln(file);
 }
 for (var f = 0; f < ds_list_size(fl); f ++)
 {
-	vertString = fl[| f];
-	v = 0; n = 0; t = 0;
-	if string_count("/", vertString) == 2 and string_count("//", vertString) == 0{
-		v = real(string_copy(vertString, 1, string_pos("/", vertString) - 1));
-		vertString = string_delete(vertString, 1, string_pos("/", vertString));
-		t = real(string_copy(vertString, 1, string_pos("/", vertString) - 1));
-		n = real(string_delete(vertString, 1, string_pos("/", vertString)));}
-	else if string_count("/", vertString) == 1{
-		v = real(string_copy(vertString, 1, string_pos("/", vertString) - 1));
-		t = real(string_delete(vertString, 1, string_pos("/", vertString)));}
-	else if (string_count("/", vertString) == 0){
-		v = real(vertString);}
-	else if string_count("/",vertString) == 2 and string_count("//", vertString) == 1{
-		vertString = string_replace(vertString, "//", "/");
-		v = real(string_copy(vertString, 1, string_pos("/", vertString) - 1));
-		n = real(string_delete(vertString, 1, string_pos("/", vertString)));}
-	smf_add_vertex(modelBuffer, vx[| v], vz[| v], vy[| v], nx[| n], nz[| n], ny[| n], tx[| t], 1 - ty[| t], 0, 0);
+vertString = fl[| f];
+v = 0; n = 0; t = 0;
+if string_count("/", vertString) == 2 and string_count("//", vertString) == 0{
+v = real(string_copy(vertString, 1, string_pos("/", vertString) - 1));
+vertString = string_delete(vertString, 1, string_pos("/", vertString));
+t = real(string_copy(vertString, 1, string_pos("/", vertString) - 1));
+n = real(string_delete(vertString, 1, string_pos("/", vertString)));}
+else if string_count("/", vertString) == 1{
+v = real(string_copy(vertString, 1, string_pos("/", vertString) - 1));
+t = real(string_delete(vertString, 1, string_pos("/", vertString)));}
+else if (string_count("/", vertString) == 0){
+v = real(vertString);}
+else if string_count("/",vertString) == 2 and string_count("//", vertString) == 1{
+vertString = string_replace(vertString, "//", "/");
+v = real(string_copy(vertString, 1, string_pos("/", vertString) - 1));
+n = real(string_delete(vertString, 1, string_pos("/", vertString)));}
+smf_add_vertex(modelBuffer, vx[| v], vz[| v], vy[| v], nx[| n], nz[| n], ny[| n], tx[| t], 1 - ty[| t], 0, 0, c_white, 1);
 }
 file_text_close(file); 
 vertex_end(modelBuffer);

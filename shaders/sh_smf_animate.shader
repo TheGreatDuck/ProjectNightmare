@@ -5,7 +5,7 @@ attribute vec3 in_Position;                // (x,y,z)
 attribute vec3 in_Normal;                  // (x,y,z)
 attribute vec2 in_TextureCoord;            // (u,v)
 attribute vec4 in_Colour;                  //(bone1, bone2, weight1, weight2)
-attribute vec4 in_Colour2;                  //(bone1, bone2, weight1, weight2)
+attribute vec4 in_Colour2;                 //(bone1, bone2, weight1, weight2)
 
 varying vec2 v_vTexcoord;
 varying float v_vShading;
@@ -13,6 +13,9 @@ varying float v_vShading;
 const int maxBones = 64;
 uniform vec4 boneDQ[2*maxBones];
 uniform vec3 lightDirection;
+
+varying vec3 v_worldPosition;
+varying vec4 v_vColour;
 
 void main()
 {
@@ -52,13 +55,15 @@ boneDQ[bone4+1] * weight4;
     //Translation
     objectSpacePos += 2.0 * (blendReal.w * blendDual.xyz - blendDual.w * blendReal.xyz + cross(blendReal.xyz, blendDual.xyz));
     
+    
     gl_Position = gm_Matrices[MATRIX_WORLD_VIEW_PROJECTION] * vec4(objectSpacePos, 1.0);
+    v_worldPosition = gl_Position.xyz;
 
 
     //Transform normal vector
     vec3 objectSpaceNormal = in_Normal + 2.0 * cross(blendReal.xyz, cross(blendReal.xyz, in_Normal) + blendReal.w * in_Normal);
 vec3 worldSpaceNormal = mat3(gm_Matrices[MATRIX_WORLD]) * objectSpaceNormal;
-v_vShading = 0.5 + 0.7 * max(dot(normalize(worldSpaceNormal), normalize(lightDirection)), 0.0);
+v_vShading = 0.5 + 0.7 * max(dot(normalize(worldSpaceNormal), -normalize(lightDirection)), 0.0);
 }
 
 
@@ -68,12 +73,24 @@ v_vShading = 0.5 + 0.7 * max(dot(normalize(worldSpaceNormal), normalize(lightDir
 varying vec2 v_vTexcoord;
 varying float v_vShading;
 
-void main()
-{
-    gl_FragColor = texture2D( gm_BaseTexture, v_vTexcoord );
-gl_FragColor.rgb *= v_vShading;
+varying vec3 v_worldPosition;
+
+uniform float fogStart;
+uniform float fogEnd;
+uniform vec4 fogColor;
+
+void main() {
+    vec4 starting_color = texture2D(gm_BaseTexture, v_vTexcoord);
+    if (starting_color.a < 0.01) discard;
+    
+    float dist = length(v_worldPosition);
+    
+    float fraction = clamp((dist - fogStart) / (fogEnd - fogStart), 0.0, 1.0);
+    
+    vec4 final_color = mix(starting_color, fogColor, fraction);
+    
+    gl_FragColor = final_color;
+    gl_FragColor.rgb *= v_vShading;
 }
-
-
 
 

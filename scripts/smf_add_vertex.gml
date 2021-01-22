@@ -1,15 +1,4 @@
-/// @description smf_add_vertex(buffer, x, y, z, nx, ny, nz, u, v, color, alpha)
-/// @param buffer
-/// @param x
-/// @param y
-/// @param z
-/// @param nx
-/// @param ny
-/// @param nz
-/// @param u
-/// @param v
-/// @param color
-/// @param alpha
+///smf_add_vertex(buffer, x, y, z, nx, ny, nz, u, v, color, alpha, vColor, vAlpha)
 /*
 Adds a vertex to a vertex buffer using Snidrs Model Format
 
@@ -32,4 +21,5 @@ vertex_colour(argument0, argument9, argument10);
 //vertex_color (Cotangent or bone weights)
 vertex_colour(argument0, argument9, argument10);
 
-
+//vertex_color
+vertex_colour(argument0, argument11, argument12);

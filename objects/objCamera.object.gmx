@@ -357,7 +357,10 @@ with (objActor)
                 var posMatrix = matrix_build(x, y, bottom, faceRoll, facePitch, faceDir, scale, scale, scale), submodels = getSprite[| 0], bodygroups = getSprite[| 1], frameSample = undefined;
                 matrix_set(matrix_world, posMatrix);
                 shader_set(sh_smf_animate);
-                shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "lightDirection"), -global.light[0], -global.light[1], -global.light[2]);
+                shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "fogStart"), global.fog[0]);
+                shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "fogEnd"), global.fog[1]);
+                shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "fogColor"), global.fog[2], global.fog[3], global.fog[4], 1);
+                shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "lightDirection"), global.light[0], global.light[1], global.light[2]);
                 if (getType == 4)
                 {
                     var animation = getSprite[| 2 + anim];
