@@ -307,26 +307,25 @@ if (global.skybox != noone)
 }
 //Draw world model
 texture_set_repeat(true);
-shader_set(shWorld);
-shader_set_uniform_f(shader_get_uniform(shWorld, "fogStart"), global.fog[0]);
-shader_set_uniform_f(shader_get_uniform(shWorld, "fogEnd"), global.fog[1]);
-shader_set_uniform_f(shader_get_uniform(shWorld, "fogColor"), global.fog[2], global.fog[3], global.fog[4], 1);
-shader_set_uniform_f(shader_get_uniform(shWorld, "lightDirection"), global.light[0], global.light[1], global.light[2]);
-shader_set_uniform_f(shader_get_uniform(shWorld, "lightColor"), global.light[3], global.light[4], global.light[5], 1);
-shader_set_uniform_f(shader_get_uniform(shWorld, "lightAmbient"), global.light[6], global.light[7], global.light[8], 1);
+shader_set(sh_smf_animate);
+shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "fogStart"), global.fog[0]);
+shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "fogEnd"), global.fog[1]);
+shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "fogColor"), global.fog[2], global.fog[3], global.fog[4], 1);
+shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "lightDirection"), global.light[0], global.light[1], global.light[2]);
+shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "lightColor"), global.light[3], global.light[4], global.light[5], 1);
+shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "lightAmbient"), global.light[6], global.light[7], global.light[8], 1);
 var i = 0, roomData = ds_map_find_value(global.worldData[0], global.levelRoom), roomTextures = roomData[| 1], roomModels = roomData[| 2];
 repeat (ds_list_size(roomModels))
 {
-    vertex_submit(roomModels[| i], pr_trianglelist, texture_get(roomTextures[| i]));
+    smf_model_draw(roomModels[| i], texture_get(roomTextures[| i]));
     i++;
 }
-shader_reset();
 texture_set_repeat(false);
-//Draw actors
+//Draw actors with sprites
 with (objActor)
 {
     if (fVisible &amp;&amp; sprite != -1)
-    { 
+    {
         var getSprite = sprite_get(sprite), getType = sprite_type(sprite);
         switch (getType)
         {
@@ -334,14 +333,11 @@ with (objActor)
             case (1):
             case (2):
                 var cFrame = frame, size = scale * 0.5;
-                if (getType == 2)
+                if (getType)
                 {
-                    shader_set(shBillboard);
-                    matrix_set(matrix_world, matrix_build(x, y, bottom, 0, 0, 0, 1, 1, 1));
-                }
-                else
-                {
-                    matrix_set(matrix_world, matrix_build(x, y, bottom, -90, global.cD - 90, 0, 1, 1, 1));
+                    var spritePitch = -90;
+                    if (getType == 2) spritePitch = global.cP - 90;
+                    matrix_set(matrix_world, matrix_build(x, y, bottom, spritePitch, global.cD - 90, 0, size * image_get_width(getSprite), size * image_get_height(getSprite), 1));
                     if (getType == 1)
                     {
                         var dir = (round((point_direction(x, y, global.cX, global.cY) - faceDir) / 90)) mod (4), frames = image_get_number(getSprite);
@@ -349,18 +345,12 @@ with (objActor)
                         cFrame = min(((frames * 0.25) * dir) + frame, frames - 1);
                     }
                 }
-                draw_image_ext(getSprite, cFrame, 0, 0, size, -size, 0, c_white, 1);
-                shader_reset();
+                smf_model_draw(global.worldData[1], ds_list_find_value(global.spr[| sprite], 2 + cFrame));
             break
             case (3):
             case (4):
                 var posMatrix = matrix_build(x, y, bottom, faceRoll, facePitch, faceDir, scale, scale, scale), submodels = getSprite[| 0], bodygroups = getSprite[| 1], frameSample = undefined;
                 matrix_set(matrix_world, posMatrix);
-                shader_set(sh_smf_animate);
-                shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "fogStart"), global.fog[0]);
-                shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "fogEnd"), global.fog[1]);
-                shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "fogColor"), global.fog[2], global.fog[3], global.fog[4], 1);
-                shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "lightDirection"), global.light[0], global.light[1], global.light[2]);
                 if (getType == 4)
                 {
                     var animation = getSprite[| 2 + anim];
@@ -420,7 +410,6 @@ with (objActor)
                         }
                     }
                 }
-                shader_reset();
             break
         }
     }
@@ -431,15 +420,14 @@ with (objActor)
         draw_image_stretched_ext(global.bg[| cBgShadow], 0, -radius, -radius, shadowSize, shadowSize, c_white, 0.5);
     }
 }
+shader_reset();
 i = 0;
 repeat (ds_list_size(global.particles))
 {
-    shader_set(shBillboard);
     var particle = global.particles[| i];
-    matrix_set(matrix_world, matrix_build(particle[| cParX], particle[| cParY], particle[| cParZ], 0, 0, 0, 1, 1, 1));
+    matrix_set(matrix_world, matrix_build(particle[| cParX], particle[| cParY], particle[| cParZ], -90, global.cD - 90, global.cP, 1, 1, 1));
     var size = particle[| cParScale] * 0.5;
     draw_image_ext(sprite_get(particle[| cParSprite]), particle[| cParFrame], 0, 0, size, -size, 0, c_white, 1);
-    shader_reset();
     i++;
 }
 smf_matrix_reset();

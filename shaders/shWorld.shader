@@ -42,7 +42,7 @@ uniform vec4 fogColor;
 
 void main() {
     vec4 starting_color = v_vColour * texture2D(gm_BaseTexture, v_vTexcoord);
-    
+    if (starting_color.a < 0.01) discard;
     float dist = length(v_worldPosition);
     
     float fraction = clamp((dist - fogStart) / (fogEnd - fogStart), 0.0, 1.0);

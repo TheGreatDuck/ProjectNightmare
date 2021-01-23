@@ -4,22 +4,26 @@
 attribute vec3 in_Position;                // (x,y,z)
 attribute vec3 in_Normal;                  // (x,y,z)
 attribute vec2 in_TextureCoord;            // (u,v)
-attribute vec4 in_Colour;                  //(bone1, bone2, weight1, weight2)
-attribute vec4 in_Colour2;                 //(bone1, bone2, weight1, weight2)
+attribute vec4 in_Colour;                  // (bone1, bone2, weight1, weight2)
+attribute vec4 in_Colour2;                 // (bone1, bone2, weight1, weight2)
+attribute vec4 in_Colour3;                 // (r, g, b, a)
 
 varying vec2 v_vTexcoord;
-varying float v_vShading;
+varying vec4 v_vColour;
 
 const int maxBones = 64;
 uniform vec4 boneDQ[2*maxBones];
-uniform vec3 lightDirection;
 
 varying vec3 v_worldPosition;
-varying vec4 v_vColour;
+
+uniform vec3 lightDirection;
+uniform vec4 lightColor;
+uniform vec4 lightAmbient;
 
 void main()
 {
     v_vTexcoord = in_TextureCoord;
+    //v_vColour = in_Colour3;
 
     //Get bone indices and bone weights
     int bone1 = int(in_Colour.r * 510.0);
@@ -58,12 +62,15 @@ boneDQ[bone4+1] * weight4;
     
     gl_Position = gm_Matrices[MATRIX_WORLD_VIEW_PROJECTION] * vec4(objectSpacePos, 1.0);
     v_worldPosition = gl_Position.xyz;
-
-
+    
     //Transform normal vector
+    /*vec3 objectSpaceNormal = in_Normal + 2.0 * cross(blendReal.xyz, cross(blendReal.xyz, in_Normal) + blendReal.w * in_Normal);
+    vec3 worldSpaceNormal = mat3(gm_Matrices[MATRIX_WORLD]) * objectSpaceNormal;
+    v_vShading = 0.5 + 0.7 * max(dot(normalize(worldSpaceNormal), normalize(-lightDirection)), 0.0);*/
     vec3 objectSpaceNormal = in_Normal + 2.0 * cross(blendReal.xyz, cross(blendReal.xyz, in_Normal) + blendReal.w * in_Normal);
-vec3 worldSpaceNormal = mat3(gm_Matrices[MATRIX_WORLD]) * objectSpaceNormal;
-v_vShading = 0.5 + 0.7 * max(dot(normalize(worldSpaceNormal), -normalize(lightDirection)), 0.0);
+    vec3 worldSpaceNormal = mat3(gm_Matrices[MATRIX_WORLD]) * objectSpaceNormal;
+    float lightAngleDifference = max(dot(normalize(worldSpaceNormal), normalize(-lightDirection)), 0.);
+    v_vColour = in_Colour3 * vec4(min(lightAmbient + lightColor * lightAngleDifference, vec4(1.)).rgb, in_Colour3.a);
 }
 
 
@@ -71,7 +78,7 @@ v_vShading = 0.5 + 0.7 * max(dot(normalize(worldSpaceNormal), -normalize(lightDi
 // Simple passthrough fragment shader
 //
 varying vec2 v_vTexcoord;
-varying float v_vShading;
+varying vec4 v_vColour;
 
 varying vec3 v_worldPosition;
 
@@ -80,7 +87,7 @@ uniform float fogEnd;
 uniform vec4 fogColor;
 
 void main() {
-    vec4 starting_color = texture2D(gm_BaseTexture, v_vTexcoord);
+    vec4 starting_color = v_vColour * texture2D(gm_BaseTexture, v_vTexcoord);
     if (starting_color.a < 0.01) discard;
     
     float dist = length(v_worldPosition);
@@ -90,7 +97,6 @@ void main() {
     vec4 final_color = mix(starting_color, fogColor, fraction);
     
     gl_FragColor = final_color;
-    gl_FragColor.rgb *= v_vShading;
 }
 
 

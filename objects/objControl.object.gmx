@@ -143,7 +143,8 @@ global.spr[| id] = a list containing sprite data:
         1 = 4-directional
         2 = billboard
         3 = static model
-        4 = animated model*/
+        4 = animated model
+    2... = sprite as texture pointers (undefined if sprite is a model)*/
 global.spr = ds_list_create();
 image_stream_start("spr", 2048, 2048, 0, true, false);
 var file = file_find_first(cDirSpr + "*.png", 0), tempData = ds_priority_create();
@@ -166,7 +167,7 @@ while (file != "")
     }
     //Close the lookup table after and add the sprites to the atlas
     file_text_close(table);
-    image_stream_add("spr", slot, cDirSpr + file, frames, xOfs, yOfs);
+    image_stream_add_3d("spr", slot, cDirSpr + file, frames, xOfs, yOfs);
     ds_list_add(list, "sprite", rotates);
     ds_priority_add(tempData, list, real(slot));
     file = file_find_next();
@@ -200,8 +201,13 @@ file_find_close();
 i = 0;
 repeat (ds_priority_size(tempData))
 {
-    var list = ds_priority_find_min(tempData);
-    if (list[| 0] == "sprite") ds_list_replace(list, 0, image_group_find_image("spr", string(i)));
+    var list = ds_priority_find_min(tempData), addSpr = image_group_find_image("spr", string(i)), j = 0;
+    if (list[| 0] == "sprite") ds_list_replace(list, 0, addSpr);
+    repeat (image_get_number(addSpr))
+    {
+        ds_list_add(list, image_get_texture(addSpr, j));
+        j++;
+    }
     ds_list_add(global.spr, list);
     ds_priority_delete_min(tempData);
     i++;
@@ -483,14 +489,17 @@ for (i = 0; i &lt; 2; i++)
             2 = world models list
             3 = collision shape
             4 = collision object
-global.worldData[1] contains the vertex buffer format*/
+global.worldData[1] contains the vertex buffer used by sprites in 3D*/
 global.worldData[0] = ds_map_create();
-vertex_format_begin();
-vertex_format_add_position_3d();
-vertex_format_add_normal();
-vertex_format_add_textcoord();
-vertex_format_add_color();
-global.worldData[1] = vertex_format_end();
+global.worldData[1] = vertex_create_buffer();
+vertex_begin(global.worldData[1], SMF_format);
+smf_add_vertex(global.worldData[1], 0, 0, 0, 0, 0, 1, 0, 0, c_white, 1, c_white, 1);
+smf_add_vertex(global.worldData[1], 1, 0, 0, 0, 0, 1, 1, 0, c_white, 1, c_white, 1);
+smf_add_vertex(global.worldData[1], 0, 1, 0, 0, 0, 1, 0, 1, c_white, 1, c_white, 1);
+smf_add_vertex(global.worldData[1], 1, 0, 0, 0, 0, 1, 1, 0, c_white, 1, c_white, 1);
+smf_add_vertex(global.worldData[1], 1, 1, 0, 0, 0, 1, 1, 1, c_white, 1, c_white, 1);
+smf_add_vertex(global.worldData[1], 0, 1, 0, 0, 0, 1, 0, 1, c_white, 1, c_white, 1);
+vertex_end(global.worldData[1]);
 global.fog[0] = 0;
 global.fog[1] = 65536;
 for (i = 2; i &lt; 5; i++) global.fog[i] = 0;
@@ -507,6 +516,7 @@ global.roomName = "Loading"; //Used for Discord Rich Presence
 global.roomIcon = 0; //Also for RPC. The number corresponds to which large icon key should be used.
 global.minZ = 0; //The minimal Z of the level. Used for deleting actors below this position.
 global.deltaTime = 60 / 1000000 * delta_time;
+gameLoop = 0;
 global.currentRoom = -2; /*PN uses a different room system to get around the memory leak issues with GameMaker: Studio 1.4 involving rooms.
 When you change or restart rooms, the game would leak ~3 KB of memory.
 As a workaround, only one room must be utilized during the whole session.*/
@@ -619,6 +629,7 @@ repeat (14)
                 global.bind[i, 5] = global.bind[i, 2];
                 global.bind[i, 6] = global.bind[i, 2];
         }
+        if (gamepad_button_check_pressed(0, conBind)) global.bind[i, 3] = true;
         global.bind[i, 4] = gamepad_button_check_released(0, conBind);
     }
     else
@@ -630,19 +641,21 @@ repeat (14)
             case (mb_middle):
             case (mb_right):
                 global.bind[i, 2] = mouse_check_button(keyBind);
+                if (mouse_check_button_pressed(keyBind)) global.bind[i, 3] = true;
                 global.bind[i, 4] = mouse_check_button_released(keyBind);
             break
             default:
                 global.bind[i, 2] = keyboard_check(keyBind); //Just key buttons
+                if (keyboard_check_pressed(keyBind)) global.bind[i, 3] = true;
                 global.bind[i, 4] = keyboard_check_released(keyBind);
         }
         global.bind[i, 5] = global.bind[i, 2];
         global.bind[i, 6] = global.bind[i, 2];
     }
-    global.bind[i, 3] = bind_hardcode_pressed(keyBind, conBind);
     i++;
 }
-while (global.deltaTime--)
+gameLoop += global.deltaTime;
+while (gameLoop)
 {
     with (all)
     {
@@ -662,6 +675,7 @@ while (global.deltaTime--)
         }
         clearInput = false;
     }
+    gameLoop--;
 }
 i = 0;
 repeat (14)

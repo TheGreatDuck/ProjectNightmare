@@ -38,6 +38,6 @@ else if string_count("1.0", version)
 }
 else show_message(path + " was made with a newer version of the SMF format and is not supported");
 buffer_delete(loadBuff);
-
+vertex_freeze(vBuff);
 return vBuff;
 

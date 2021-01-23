@@ -150,7 +150,7 @@ if (keyVec &gt; 0.1 &amp;&amp; !sliding)
         else
         {
             targetDir = gotoDir;
-            moveDir = targetDir;
+            moveDir = gotoDir;
         }
     else
     {
@@ -175,9 +175,7 @@ else
     spd = 0;
     faceRoll = 0;
 }
-var lookTo = moveDir;
-//if (holding &amp;&amp; holding.holdableType) lookTo = global.cD;
-faceDir += turn_to_angle(lookTo, 10, faceDir);
+faceDir += turn_to_angle(moveDir, 10, faceDir);
 hSpeed = lengthdir_x(spd, moveDir);
 vSpeed = lengthdir_y(spd, moveDir);
 //jump when on the ground

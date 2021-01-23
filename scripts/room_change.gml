@@ -88,7 +88,7 @@ with (objControl)
         for (i = 0; i < textures; i++) //Loop through the texture IDs list to add every triangle with the corresponding texture ID to each world model segment
         {
             var buffer = addModels[| i];
-            vertex_begin(buffer, global.worldData[1]);
+            vertex_begin(buffer, SMF_format);
             for (j = 0; j < ds_list_size(roomModel); j += 11) //Iterate through every triangle to be added and skip those that don't have the corresponding texture ID
             {
                 var texID = roomModel[| j + 9];
@@ -142,22 +142,14 @@ with (objControl)
                 }
                 pos[15] = image_get_width(texPointer) * 0.5;
                 pos[16] = image_get_height(texPointer) * 0.5;
-                vertex_position_3d(buffer, pos[0], pos[1], pos[2]);
-                vertex_normal(buffer, pos[9, 0], pos[10, 0], pos[11, 0]);
-                vertex_texcoord(buffer, lerp(pos[0], lerp(pos[1], pos[0], pos[13]), pos[12]) / pos[15], lerp(-pos[2], pos[1], pos[14]) / pos[16]);
-                vertex_colour(buffer, c_white, 1);
-                vertex_position_3d(buffer, pos[3], pos[4], pos[5]);
-                vertex_normal(buffer, pos[9, 1], pos[10, 1], pos[11, 1]);
-                vertex_texcoord(buffer, lerp(pos[3], lerp(pos[4], pos[3], pos[13]), pos[12]) / pos[15], lerp(-pos[5], pos[4], pos[14]) / pos[16]);
-                vertex_colour(buffer, c_white, 1);
-                vertex_position_3d(buffer, pos[6], pos[7], pos[8]);
-                vertex_normal(buffer, pos[9, 2], pos[10, 2], pos[11, 2]);
-                vertex_texcoord(buffer, lerp(pos[6], lerp(pos[7], pos[6], pos[13]), pos[12]) / pos[15], lerp(-pos[8], pos[7], pos[14]) / pos[16]);
-                vertex_colour(buffer, c_white, 1);
+                smf_add_vertex(buffer, pos[0], pos[1], pos[2], pos[9, 0], pos[10, 0], pos[11, 0], lerp(pos[0], lerp(pos[1], pos[0], pos[13]), pos[12]) / pos[15], lerp(-pos[2], pos[1], pos[14]) / pos[16], 0, 0, c_white, 1);
+                smf_add_vertex(buffer, pos[3], pos[4], pos[5], pos[9, 1], pos[10, 1], pos[11, 1], lerp(pos[3], lerp(pos[4], pos[3], pos[13]), pos[12]) / pos[15], lerp(-pos[5], pos[4], pos[14]) / pos[16], 0, 0, c_white, 1);
+                smf_add_vertex(buffer, pos[6], pos[7], pos[8], pos[9, 2], pos[10, 2], pos[11, 2], lerp(pos[6], lerp(pos[7], pos[6], pos[13]), pos[12]) / pos[15], lerp(-pos[8], pos[7], pos[14]) / pos[16], 0, 0, c_white, 1);
                 c_shape_add_triangle(pos[0], pos[1], pos[2], pos[3], pos[4], pos[5], pos[6], pos[7], pos[8]);
                 global.minZ = min(global.minZ, pos[2], pos[5], pos[8]);
             }
             vertex_end(buffer);
+            vertex_freeze(buffer);
         }
         ds_list_destroy(roomModel);
         c_shape_end_trimesh(addCShape);
