@@ -201,12 +201,11 @@ file_find_close();
 i = 0;
 repeat (ds_priority_size(tempData))
 {
-    var list = ds_priority_find_min(tempData), addSpr = image_group_find_image("spr", string(i)), j = 0;
-    if (list[| 0] == "sprite") ds_list_replace(list, 0, addSpr);
-    repeat (image_get_number(addSpr))
+    var list = ds_priority_find_min(tempData);
+    if (list[| 0] == "sprite")
     {
-        ds_list_add(list, image_get_texture(addSpr, j));
-        j++;
+        ds_list_replace(list, 0, image_group_find_image("spr", string(i)));
+        for (var j = 0, p = list[| 0]; j &lt; image_get_number(p); j++) ds_list_add(list, image_get_texture(p, j)); //Add frames to sprite data list
     }
     ds_list_add(global.spr, list);
     ds_priority_delete_min(tempData);
@@ -493,12 +492,12 @@ global.worldData[1] contains the vertex buffer used by sprites in 3D*/
 global.worldData[0] = ds_map_create();
 global.worldData[1] = vertex_create_buffer();
 vertex_begin(global.worldData[1], SMF_format);
+smf_add_vertex(global.worldData[1], 0, 1, 0, 0, 0, 1, 0, 1, c_white, 1, c_white, 1);
+smf_add_vertex(global.worldData[1], 0, 0, 0, 0, 0, 1, 0, 0, c_white, 1, c_white, 1);
+smf_add_vertex(global.worldData[1], 1, 1, 0, 0, 0, 1, 1, 1, c_white, 1, c_white, 1);
 smf_add_vertex(global.worldData[1], 0, 0, 0, 0, 0, 1, 0, 0, c_white, 1, c_white, 1);
 smf_add_vertex(global.worldData[1], 1, 0, 0, 0, 0, 1, 1, 0, c_white, 1, c_white, 1);
-smf_add_vertex(global.worldData[1], 0, 1, 0, 0, 0, 1, 0, 1, c_white, 1, c_white, 1);
-smf_add_vertex(global.worldData[1], 1, 0, 0, 0, 0, 1, 1, 0, c_white, 1, c_white, 1);
 smf_add_vertex(global.worldData[1], 1, 1, 0, 0, 0, 1, 1, 1, c_white, 1, c_white, 1);
-smf_add_vertex(global.worldData[1], 0, 1, 0, 0, 0, 1, 0, 1, c_white, 1, c_white, 1);
 vertex_end(global.worldData[1]);
 global.fog[0] = 0;
 global.fog[1] = 65536;

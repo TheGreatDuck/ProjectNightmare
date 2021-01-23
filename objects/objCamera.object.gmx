@@ -329,26 +329,25 @@ with (objActor)
         var getSprite = sprite_get(sprite), getType = sprite_type(sprite);
         switch (getType)
         {
-            case (0):
-            case (1):
-            case (2):
-                var cFrame = frame, size = scale * 0.5;
+            case (0): //Sprite
+            case (1): //4-directional sprite
+            case (2): //Billboard sprite
+                var cFrame = frame, size = scale * 0.5, spritePitch = -90, w = size * image_get_width(getSprite);
                 if (getType)
                 {
-                    var spritePitch = -90;
-                    if (getType == 2) spritePitch = global.cP - 90;
-                    matrix_set(matrix_world, matrix_build(x, y, bottom, spritePitch, global.cD - 90, 0, size * image_get_width(getSprite), size * image_get_height(getSprite), 1));
                     if (getType == 1)
                     {
                         var dir = (round((point_direction(x, y, global.cX, global.cY) - faceDir) / 90)) mod (4), frames = image_get_number(getSprite);
                         while (dir &lt; 0) dir += 4;
                         cFrame = min(((frames * 0.25) * dir) + frame, frames - 1);
                     }
+                    if (getType == 2) spritePitch = global.cP - 90;
                 }
+                matrix_set(matrix_world, matrix_build(x - image_get_xoffset(getSprite) * 0.5, y, bottom + image_get_yoffset(getSprite) * 0.5, spritePitch, global.cD - 90, 0, w, w, -size * image_get_height(getSprite)));
                 smf_model_draw(global.worldData[1], ds_list_find_value(global.spr[| sprite], 2 + cFrame));
             break
-            case (3):
-            case (4):
+            case (3): //Static model
+            case (4): //Animated model
                 var posMatrix = matrix_build(x, y, bottom, faceRoll, facePitch, faceDir, scale, scale, scale), submodels = getSprite[| 0], bodygroups = getSprite[| 1], frameSample = undefined;
                 matrix_set(matrix_world, posMatrix);
                 if (getType == 4)
