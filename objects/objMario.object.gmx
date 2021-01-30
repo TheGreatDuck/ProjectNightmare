@@ -107,6 +107,8 @@ switch (anim)
     break
     case (cAniMarioLand):
     {
+        headRoll[0] = 0;
+        headRoll[1] = 0;
         bodygroup[0] = 0;
         bodygroup[1] = 0;
         if (frame &lt; 5) frameSpd = 0.3 + spd * 0.3;
@@ -118,6 +120,8 @@ switch (anim)
     }
     break
     case (cAniMarioSkid):
+        headRoll[0] = 0;
+        headRoll[1] = 0;
         frameSpd = 0.3;
         if (frame &gt; 8.5 - spd) anim = cAniMarioIdle;
     break
