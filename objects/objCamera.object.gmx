@@ -332,7 +332,7 @@ with (objActor)
             case (0): //Sprite
             case (1): //4-directional sprite
             case (2): //Billboard sprite
-                var cFrame = frame, size = scale * 0.5, spritePitch = -90, w = size * image_get_width(getSprite);
+                var cFrame = frame, size = scale * 0.5, spritePitch = -90, w = size * image_get_width(getSprite), xOffset = image_get_xoffset(getSprite) * 0.5;
                 if (getType)
                 {
                     if (getType == 1)
@@ -343,7 +343,7 @@ with (objActor)
                     }
                     if (getType == 2) spritePitch = global.cP - 90;
                 }
-                matrix_set(matrix_world, matrix_build(x - image_get_xoffset(getSprite) * 0.5, y, bottom + image_get_yoffset(getSprite) * 0.5, spritePitch, global.cD - 90, 0, w, w, -size * image_get_height(getSprite)));
+                matrix_set(matrix_world, matrix_build(x - lengthdir_x(xOffset, global.cD - 90), y - lengthdir_y(xOffset, global.cD - 90), bottom + image_get_yoffset(getSprite) * 0.5, spritePitch, global.cD - 90, 0, w, w, -size * image_get_height(getSprite)));
                 smf_model_draw(global.worldData[1], ds_list_find_value(global.spr[| sprite], 2 + cFrame));
             break
             case (3): //Static model
