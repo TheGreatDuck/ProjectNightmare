@@ -348,15 +348,9 @@ with (objActor)
             break
             case (3): //Static model
             case (4): //Animated model
-                var posMatrix = matrix_build(x, y, bottom, faceRoll, facePitch, faceDir, scale, scale, scale), submodels = getSprite[| 0], bodygroups = getSprite[| 1], frameSample = undefined;
+                var posMatrix = matrix_build(x, y, bottom, faceRoll, facePitch, faceDir, scale, scale, scale), submodels = getSprite[| 0], bodygroups = getSprite[| 1];
                 matrix_set(matrix_world, posMatrix);
-                if (getType == 4)
-                {
-                    var animation = getSprite[| 2 + anim];
-                    if !(is_undefined(customFrame)) frameSample = smf_sample_create_from_frame(customFrame);
-                    else frameSample = smf_sample_blend(animation[| 2 + frame], animation[| 2 + (frame + 1) mod (ds_list_size(animation) - 2)], frac(frame));
-                    smf_animation_set_shader_uniforms(sh_smf_animate, frameSample);
-                }
+                if (getType == 4 &amp;&amp; !is_undefined(frameSample)) smf_animation_set_shader_uniforms(sh_smf_animate, frameSample);
                 //Submodels
                 i = 0;
                 repeat (ds_list_size(submodels))
@@ -380,15 +374,9 @@ with (objActor)
                     getType = sprite_type(sprite);
                     if (getType &gt; 2)
                     {
-                        var getSprite = sprite_get(sprite), submodels = getSprite[| 0], bodygroups = getSprite[| 1], holdFrameSample = undefined, size = scale / other.scale;
-                        matrix_set(matrix_world, matrix_multiply(matrix_multiply(matrix_build(0, 0, 0, 0, -180, -180, size, size, size), smf_matrix_create_from_dualquat(smf_sample_get_bone_orientation(frameSample, 15))), posMatrix));
-                        if (getType == 4)
-                        {
-                            var animation = getSprite[| 2 + anim];
-                            if !(is_undefined(customFrame)) holdFrameSample = smf_sample_create_from_frame(customFrame);
-                            else holdFrameSample = smf_sample_blend(animation[| 2 + frame], animation[| 2 + (frame + 1) mod (ds_list_size(animation) - 2)], frac(frame));
-                            smf_animation_set_shader_uniforms(sh_smf_animate, holdFrameSample);
-                        }
+                        var getSprite = sprite_get(sprite), submodels = getSprite[| 0], bodygroups = getSprite[| 1], size = scale / other.scale;
+                        matrix_set(matrix_world, matrix_multiply(matrix_multiply(matrix_build(0, 0, 0, 0, -180, -180, size, size, size), smf_matrix_create_from_dualquat(smf_sample_get_bone_orientation(other.frameSample, 15))), posMatrix));
+                        if (getType == 4 &amp;&amp; !is_undefined(frameSample)) smf_animation_set_shader_uniforms(sh_smf_animate, frameSample);
                         //Submodels
                         i = 0;
                         repeat (ds_list_size(submodels))
