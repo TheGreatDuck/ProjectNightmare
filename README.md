@@ -23,6 +23,8 @@ If you are interested in checking out our development progress, hop on over to o
 
 ### [CONTRIBUTORS]
 
+**Matthew "Spliffurt" Brady** - music composing
+
 **Typhon** - Delayed Function Calling DLL
 
 ### [THIRD-PARTIES]
@@ -36,8 +38,6 @@ If you are interested in checking out our development progress, hop on over to o
 **GMLScripts.com** - scripts
 
 **Hello** - cutscene system
-
-**Matthew "Spliffurt" Brady** - music composing
 
 **M.S.T.O.P.** - FMODGMS
 
