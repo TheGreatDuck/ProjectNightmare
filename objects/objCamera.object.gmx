@@ -421,13 +421,12 @@ with (objActor)
 }
 shader_reset();
 i = 0;
-repeat (ds_list_size(global.particles))
+repeat (ds_list_size(global.particles) / 12)
 {
-    var particle = global.particles[| i];
-    matrix_set(matrix_world, matrix_build(particle[| cParX], particle[| cParY], particle[| cParZ], -90, global.cD - 90, global.cP, 1, 1, 1));
-    var size = particle[| cParScale] * 0.5;
-    draw_image_ext(sprite_get(particle[| cParSprite]), particle[| cParFrame], 0, 0, size, -size, 0, c_white, 1);
-    i++;
+    matrix_set(matrix_world, matrix_build(global.particles[| i + cParX], global.particles[| i + cParY], global.particles[| i + cParZ], -90, global.cD - 90, global.cP, 1, 1, 1));
+    var size = global.particles[| i + cParScale] * 0.5;
+    draw_image_ext(sprite_get(global.particles[| i + cParSprite]), global.particles[| i + cParFrame], 0, 0, size, -size, 0, c_white, 1);
+    i += 12;
 }
 smf_matrix_reset();
 </string>

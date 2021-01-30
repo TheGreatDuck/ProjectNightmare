@@ -709,20 +709,18 @@ repeat (14)
             <string>///Update particles
 if (global.paused) exit
 var i = 0;
-repeat (ds_list_size(global.particles))
+repeat (ds_list_size(global.particles) / 12)
 {
-    var particle = global.particles[| i];
-    ds_list_replace(particle, cParFrame, particle[| cParFrame] + particle[| cParFrameSpd]);
-    if (particle[| cParFrame] &gt; image_get_number(sprite_get(particle[| cParSprite])) - 1)
+    global.particles[| i + cParFrame] = global.particles[| i + cParFrame] + global.particles[| i + cParFrameSpd];
+    if (global.particles[| i + cParFrame] &gt; image_get_number(sprite_get(global.particles[| i + cParSprite])) - 1)
     {
-        ds_list_destroy(particle);
-        ds_list_delete(global.particles, i);
+        repeat (12) ds_list_delete(global.particles, i);
         continue
     }
-    ds_list_replace(particle, cParX, particle[| cParX] + particle[| cParHSpeed]);
-    ds_list_replace(particle, cParY, particle[| cParY] + particle[| cParVSpeed]);
-    ds_list_replace(particle, cParZ, particle[| cParZ] + particle[| cParZSpeed]);
-    i++;
+    global.particles[| i + cParX] = global.particles[| i + cParX] + global.particles[| i + cParHSpeed];
+    global.particles[| i + cParY] = global.particles[| i + cParY] + global.particles[| i + cParVSpeed];
+    global.particles[| i + cParZ] = global.particles[| i + cParZ] + global.particles[| i + cParZSpeed];
+    i += 12;
 }
 </string>
           </argument>
