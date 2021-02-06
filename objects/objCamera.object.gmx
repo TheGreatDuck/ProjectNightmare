@@ -43,6 +43,7 @@ flinch = 0;
 sensX = 10;
 sensY = 10;
 previousZ = 0;
+zTo = 0;
 //Set global variables
 global.cX = 0;
 global.cY = 0;
@@ -125,23 +126,24 @@ if (window_has_focus()) cursor = cr_default;
 window_set_cursor(cursor);
 if (target &amp;&amp; instance_exists(target))
 {
-    if !(cutscene_exists()) mouse_look(false);
+    if !(cutscene_exists()) mouse_look(true);
     if (!cutscene_exists() || (cutscene_exists() &amp;&amp; global.follow))
     {
         var tZ = previousZ;
         if (target.z &lt; previousZ - 10|| target.z &gt; previousZ + 40) tZ = target.z;
         if (target.fOnGround &amp;&amp; target.shadowZ != -65536) previousZ = target.shadowZ + target.half;
-        var rangeTo = 80, zTo = max(tZ, target.shadowZ) + 16, camZTo = zTo - 2;
-        if (c_raycast_world(target.x, target.y, zTo, target.x - lengthdir_x(80, faceDir), target.y - lengthdir_y(80, faceDir), zTo, 1))
+        var rangeTo = 80, zGoto = max(tZ, target.shadowZ) + 16; //, camZTo = zTo - 2;
+        if (c_raycast_world(target.x, target.y, zGoto, target.x - lengthdir_x(lengthdir_x(80, faceDir), facePitch), target.y - lengthdir_x(lengthdir_y(80, faceDir), facePitch), zGoto + lengthdir_y(80, facePitch), 1))
         {
             rangeTo = point_distance_3d(target.x, target.y, target.z, c_hit_x(), c_hit_y(), c_hit_z());
-            camZTo = zTo + (target.z - tZ) / (point_distance(x, y, target.x, target.y) / 16) - 10;
+            camZTo = zGoto + (target.z - tZ) / (point_distance(x, y, target.x, target.y) / 16) - 10;
         }
         range = lerp(range, rangeTo, 0.2);
-        x = target.x - lengthdir_x(range, faceDir);
-        y = target.y - lengthdir_y(range, faceDir);
-        z = lerp(z, max(zTo, global.minZ), 0.2);
-        facePitch = lerp_angle(facePitch, point_pitch(x, y, z, target.x, target.y, camZTo), 0.2);
+        x = target.x - lengthdir_x(lengthdir_x(range, faceDir), facePitch);
+        y = target.y - lengthdir_x(lengthdir_y(range, faceDir), facePitch);
+        zTo = lerp(zTo, max(zGoto, global.minZ), 0.2);
+        z = zTo + lengthdir_y(range, facePitch);
+        //facePitch = lerp_angle(facePitch, point_pitch(x, y, z, target.x, target.y, camZTo), 0.2);
         global.cX = x;
         global.cY = y;
         global.cZ = z;
@@ -411,7 +413,7 @@ shader_reset();
 i = 0;
 repeat (ds_list_size(global.particles) / 12)
 {
-    matrix_set(matrix_world, matrix_build(global.particles[| i + cParX], global.particles[| i + cParY], global.particles[| i + cParZ], -90, global.cD - 90, global.cP, 1, 1, 1));
+    matrix_set(matrix_world, matrix_build(global.particles[| i + cParX], global.particles[| i + cParY], global.particles[| i + cParZ], global.cP - 90, global.cD - 90, 0, 1, 1, 1));
     var size = global.particles[| i + cParScale] * 0.5;
     draw_image_ext(sprite_get(global.particles[| i + cParSprite]), global.particles[| i + cParFrame], 0, 0, size, -size, 0, c_white, 1);
     i += 12;

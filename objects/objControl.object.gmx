@@ -777,6 +777,7 @@ image_group_destroy("spr");
 image_group_destroy("bg");
 image_group_destroy("tex");
 image_system_cleanup();
+directory_destroy("data");
 </string>
           </argument>
         </arguments>
