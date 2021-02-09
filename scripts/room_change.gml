@@ -68,8 +68,8 @@ with (objControl)
         }
         ds_list_destroy(roomActors);
         //Load room textures
-        ds_list_add(addTextures, roomModel[| 9]); //Add the first triangle's texture to the world textures list
-        for (i = 20; i < ds_list_size(roomModel); i += 11) //First loop through the list to get every texture that gets used by the room
+        ds_list_add(addTextures, roomModel[| 27]); //Add the first triangle's texture to the world textures list
+        for (i = 55; i < ds_list_size(roomModel); i += 28) //First loop through the list to get every texture that gets used by the room
         {
             var unique = true, j;
             //Iterate through every texture ID in the world textures list to see if the current triangle's texture is already included
@@ -89,64 +89,16 @@ with (objControl)
         {
             var buffer = addModels[| i];
             vertex_begin(buffer, SMF_format);
-            for (j = 0; j < ds_list_size(roomModel); j += 11) //Iterate through every triangle to be added and skip those that don't have the corresponding texture ID
+            for (j = 0; j < ds_list_size(roomModel); j += 28) //Iterate through every triangle to be added and skip those that don't have the corresponding texture ID
             {
-                var texID = roomModel[| j + 9];
-                if (texID != addTextures[| i]) continue
-                var pos, texPointer = ds_list_find_value(global.tex[| texID], 0), vec, d, getNormal;
-                //X,Y,Z
-                for (var k = 0; k < 9; k++) pos[k] = roomModel[| j + k];
-                //NX,NY,NZ
-                getNormal = triangle_normal(pos[0], pos[1], pos[2], pos[3], pos[4], pos[5], pos[6], pos[7], pos[8]);
-                pos[9, 0] = getNormal[0]; //Normals are flat by default, unless specified otherwise by triangle data
-                pos[10, 0] = getNormal[1];
-                pos[11, 0] = getNormal[2];
-                pos[9, 1] = getNormal[0];
-                pos[10, 1] = getNormal[1];
-                pos[11, 1] = getNormal[2];
-                pos[9, 2] = getNormal[0];
-                pos[10, 2] = getNormal[1];
-                pos[11, 2] = getNormal[2];
-                if (roomModel[| j + 10]) //Smooth shading
+                if (roomModel[| j + 27] != addTextures[| i]) continue
+                for (k = 0; k < 27; k += 9)
                 {
-                    var combineNormals = ds_list_create(), normals;
-                    for (k = 0; k < 3; k++) normals[k] = 1;
-                    for (k = 0; k < ds_list_size(roomModel); k += 11)
-                    {
-                        if (j == k) continue
-                        for (var l = 0; l < 9; l += 3) for (var m = 0; m < 9; m += 3) if (pos[l] == roomModel[| k + m] && pos[l + 1] == roomModel[| k + m + 1] && pos[l + 2] == roomModel[| k + m + 2]) ds_list_add(combineNormals, l / 3, k);
-                    }
-                    for (k = 0; k < ds_list_size(combineNormals); k += 2)
-                    {
-                        var slot = combineNormals[| k], otherTri = combineNormals[| k + 1], otherNormal = triangle_normal(roomModel[| otherTri], roomModel[| otherTri + 1], roomModel[| otherTri + 2], roomModel[| otherTri + 3], roomModel[| otherTri + 4], roomModel[| otherTri + 5], roomModel[| otherTri + 6], roomModel[| otherTri + 7], roomModel[| otherTri + 8]);
-                        pos[9, slot] += otherNormal[0];
-                        pos[10, slot] += otherNormal[1];
-                        pos[11, slot] += otherNormal[2];
-                        normals[slot]++;
-                    }
-                    for (k = 0; k < 3; k++) for (l = 0; l < 3; l++) pos[9 + k, l] /= normals[k];
-                    ds_list_destroy(combineNormals);
+                    var l = j + k;
+                    smf_add_vertex(buffer, roomModel[| l], roomModel[| l + 1], roomModel[| l + 2], roomModel[| l + 3], roomModel[| l + 4], roomModel[| l + 5], roomModel[| l + 6], roomModel[| l + 7], c_white, 1, roomModel[| l + 8], 1);
+                    global.minZ = min(global.minZ, roomModel[| j + 2]);
                 }
-                //U,V,W,H
-                if (getNormal[2] >= -0.1 && getNormal[2] <= 0.1)
-                {
-                    pos[12] = abs(getNormal[0]);
-                    pos[13] = abs(getNormal[1]);
-                    pos[14] = abs(getNormal[2]);
-                }
-                else
-                {
-                    pos[12] = 0;
-                    pos[13] = 0;
-                    pos[14] = 1;
-                }
-                pos[15] = image_get_width(texPointer) * 0.5;
-                pos[16] = image_get_height(texPointer) * 0.5;
-                smf_add_vertex(buffer, pos[0], pos[1], pos[2], pos[9, 0], pos[10, 0], pos[11, 0], lerp(pos[0], lerp(pos[1], pos[0], pos[13]), pos[12]) / pos[15], lerp(-pos[2], pos[1], pos[14]) / pos[16], 0, 0, c_white, 1);
-                smf_add_vertex(buffer, pos[3], pos[4], pos[5], pos[9, 1], pos[10, 1], pos[11, 1], lerp(pos[3], lerp(pos[4], pos[3], pos[13]), pos[12]) / pos[15], lerp(-pos[5], pos[4], pos[14]) / pos[16], 0, 0, c_white, 1);
-                smf_add_vertex(buffer, pos[6], pos[7], pos[8], pos[9, 2], pos[10, 2], pos[11, 2], lerp(pos[6], lerp(pos[7], pos[6], pos[13]), pos[12]) / pos[15], lerp(-pos[8], pos[7], pos[14]) / pos[16], 0, 0, c_white, 1);
-                c_shape_add_triangle(pos[0], pos[1], pos[2], pos[3], pos[4], pos[5], pos[6], pos[7], pos[8]);
-                global.minZ = min(global.minZ, pos[2], pos[5], pos[8]);
+                c_shape_add_triangle(roomModel[| j], roomModel[| j + 1], roomModel[| j + 2], roomModel[| j + 9], roomModel[| j + 10], roomModel[| j + 11], roomModel[| j + 18], roomModel[| j + 19], roomModel[| j + 20]);
             }
             vertex_end(buffer);
             vertex_freeze(buffer);
@@ -161,7 +113,7 @@ with (objControl)
         show_debug_message(key + ": " + string(addActors) + ", " + string(addTextures) + ", " + string(addModels) + ", " + string(addCShape) + ", " + string(addCObj));
         ds_map_add_list(global.worldData[0], real(key), addData);
         ds_list_destroy(roomData);
-        ds_map_replace(tempData, key, undefined);
+        tempData[? key] = undefined;
     }
     //All levels must start in the room ID 0. If this room doesn't exist, this will throw an error
     world_room_change(0, true);
