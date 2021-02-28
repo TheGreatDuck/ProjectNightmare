@@ -35,6 +35,12 @@ with (objControl)
     global.skybox = 0;
     //---ROOM START---
     var i = 0, file = file_text_open_read(cDirMap + string(global.currentRoom) + ".pnl"), tempData; //Open level file that corresponds to the current room ID
+    if (file == -1)
+    {
+        show_message("room_change: Unable to find level " + string(global.currentRoom));
+        game_end();
+        exit
+    }
     //Read level information
     for (i = 0; i < 2; i++) global.levelMusic[i] = level_read_real(file);
     global.skybox = level_read_real(file);
@@ -42,10 +48,8 @@ with (objControl)
     global.roomIcon = level_read_real(file);
     background_color[0] = level_read_real(file);
     for (i = 0; i < 2; i++) global.fog[i] = level_read_real(file);
-    var fogColor = level_read_real(file);
-    global.fog[2] = color_get_red(fogColor) / 255;
-    global.fog[3] = color_get_green(fogColor) / 255;
-    global.fog[4] = color_get_blue(fogColor) / 255;
+    global.fog[2] = level_read_real(file);
+    d3d_set_fog(false, global.fog[2], global.fog[0], global.fog[1]);
     for (i = 0; i < 3; i++) global.light[i] = level_read_real(file);
     var lightColor = level_read_real(file), lightAmbient = level_read_real(file);
     global.light[3] = color_get_red(lightColor) / 255;
@@ -54,6 +58,13 @@ with (objControl)
     global.light[6] = color_get_red(lightAmbient) / 255;
     global.light[7] = color_get_green(lightAmbient) / 255;
     global.light[8] = color_get_blue(lightAmbient) / 255;
+    shader_set(sh_smf_animate);
+    shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "fogStart"), global.fog[0]);
+    shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "fogEnd"), global.fog[1]);
+    shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "lightDirection"), global.light[0], global.light[1], global.light[2]);
+    shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "lightColor"), global.light[3], global.light[4], global.light[5], 1);
+    shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "lightAmbient"), global.light[6], global.light[7], global.light[8], 1);
+    shader_reset();
     tempData = json_decode(level_read_string(file)); //Get world data map
     //Start loading world data
     c_world_create();

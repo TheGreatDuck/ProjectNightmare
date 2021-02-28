@@ -33,8 +33,6 @@ d3d_set_perspective(true);
 d3d_set_hidden(true);
 d3d_set_culling(true);
 d3d_set_shading(false);
-d3d_light_define_ambient(c_dkgray);
-d3d_light_define_direction(1, 0, 0, -1, c_white);
 draw_set_alpha_test(true);
 draw_set_alpha_test_ref_value(0);
 audio_falloff_set_model(audio_falloff_exponent_distance);
@@ -211,7 +209,6 @@ repeat (ds_priority_size(tempData))
     ds_priority_delete_min(tempData);
     i++;
 }
-ds_priority_destroy(tempData);
 //Load model data for each model list
 for (i = 0; i &lt; ds_list_size(global.spr); i++)
 {
@@ -307,12 +304,18 @@ for (i = 0; i &lt; ds_list_size(global.spr); i++)
             file_text_close(table);
             ds_list_add(list, animation, type);
             for (j = 0; j &lt; frames; j++) ds_list_add(list, smf_sample_create(animation, type, j / frames));
-            ds_list_insert(modelList, 2 + real(slot), list);
+            ds_priority_add(tempData, list, real(slot));
             file = file_find_next();
         }
         file_find_close();
+        repeat (ds_priority_size(tempData))
+        {
+            ds_list_add(modelList, ds_priority_find_min(tempData));
+            ds_priority_delete_min(tempData);
+        }
     }
 }
+ds_priority_destroy(tempData);
 /*---BACKGROUNDS---
 They have no frames at all, so we can store way less data than sprites or textures.
 The background files are located in data\gfx\bg and MUST be PNGs and numbered.

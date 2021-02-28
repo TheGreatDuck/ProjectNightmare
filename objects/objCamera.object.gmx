@@ -310,19 +310,12 @@ if (global.skybox != noone)
 //Draw world model
 texture_set_repeat(true);
 shader_set(sh_smf_animate);
-shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "fogStart"), global.fog[0]);
-shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "fogEnd"), global.fog[1]);
-shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "fogColor"), global.fog[2], global.fog[3], global.fog[4], 1);
-shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "lightDirection"), global.light[0], global.light[1], global.light[2]);
-shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "lightColor"), global.light[3], global.light[4], global.light[5], 1);
-shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "lightAmbient"), global.light[6], global.light[7], global.light[8], 1);
 var i = 0, roomData = ds_map_find_value(global.worldData[0], global.levelRoom), roomTextures = roomData[| 1], roomModels = roomData[| 2];
 repeat (ds_list_size(roomModels))
 {
     smf_model_draw(roomModels[| i], texture_get(roomTextures[| i]));
     i++;
 }
-texture_set_repeat(false);
 //Draw actors with sprites
 with (objActor)
 {
@@ -352,7 +345,7 @@ with (objActor)
             case (4): //Animated model
                 var posMatrix = matrix_build(x, y, bottom, faceRoll, facePitch, faceDir, scale, scale, scale), submodels = getSprite[| 0], bodygroups = getSprite[| 1];
                 matrix_set(matrix_world, posMatrix);
-                if (getType == 4 &amp;&amp; !is_undefined(frameSample)) smf_animation_set_shader_uniforms(sh_smf_animate, frameSample);
+                if (getType == 4) smf_animation_set_shader_uniforms(sh_smf_animate, frameSample);
                 //Submodels
                 i = 0;
                 repeat (ds_list_size(submodels))
@@ -377,8 +370,8 @@ with (objActor)
                     if (getType &gt; 2)
                     {
                         var getSprite = sprite_get(sprite), submodels = getSprite[| 0], bodygroups = getSprite[| 1], size = scale / other.scale;
-                        matrix_set(matrix_world, matrix_multiply(matrix_multiply(matrix_build(0, 0, 0, 0, -180, -180, size, size, size), smf_matrix_create_from_dualquat(smf_sample_get_bone_orientation(other.frameSample, 15))), posMatrix));
-                        if (getType == 4 &amp;&amp; !is_undefined(frameSample)) smf_animation_set_shader_uniforms(sh_smf_animate, frameSample);
+                        matrix_set(matrix_world, matrix_multiply(matrix_multiply(matrix_build(0, 0, 0, -90, 0, 0, size, size, size), smf_matrix_create_from_dualquat(smf_sample_get_bone_orientation(other.frameSample, 12))), posMatrix));
+                        if (getType == 4) smf_animation_set_shader_uniforms(sh_smf_animate, frameSample);
                         //Submodels
                         i = 0;
                         repeat (ds_list_size(submodels))
@@ -410,6 +403,7 @@ with (objActor)
     }
 }
 shader_reset();
+texture_set_repeat(false);
 i = 0;
 repeat (ds_list_size(global.particles) / 12)
 {

@@ -137,7 +137,7 @@ spd = point_distance(0, 0, hSpeed, vSpeed);
 if (keyVec &gt; 0.1 &amp;&amp; !sliding)
 {
     var gotoDir = point_direction(0, 0, keyX, keyY);
-    if (onGround &amp;&amp; abs(angle_difference(targetDir, gotoDir)) == 180)
+    if (onGround &amp;&amp; abs(angle_difference(targetDir, gotoDir)) &gt;= 170)
         if (abs(spd) &gt;= 0.06)
         {
             spd *= 0.89;
@@ -149,6 +149,7 @@ if (keyVec &gt; 0.1 &amp;&amp; !sliding)
         }
         else
         {
+            if (anim = cAniMarioSkid) anim = cAniMarioSkid2;
             targetDir = gotoDir;
             moveDir = gotoDir;
         }
@@ -185,11 +186,8 @@ if (onGround &amp;&amp; !sliding &amp;&amp; floorPitch &lt; 60 &amp;&amp; global
     d3d_sound_play(cSndJump, false, 1);
     if !(c_raycast_world(x, y, z, x, y, top + jumpSpd, 1)) z += jumpSpd;
     zSpeed = jumpSpd - 0.1;
-    if (object_index == objMario)
-    {
-        anim = cAniMarioJump;
-        frame = 0;
-    }
+    anim = cAniMarioJump + (angle_difference(faceDir, global.cD) &lt; 0);
+    frame = 0;
 }
 //Get nearest enemy
 var near = instance_nearest(x, y, objEnemy);

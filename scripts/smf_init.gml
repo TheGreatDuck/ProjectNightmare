@@ -8,7 +8,8 @@ www.TheSnidr.com
 */
 
 //---------------Random macros-------------------\\
-globalvar SMF_MATIDENTITY; SMF_MATIDENTITY = matrix_build(0, 0, 0, 0, 0, 0, 1, 1, 1);
+globalvar SMF_MATIDENTITY;
+SMF_MATIDENTITY = matrix_build(0, 0, 0, 0, 0, 0, 1, 1, 1);
 
 //---------------SMF settings------------------\\
 globalvar SMF_format, SMF_format_bytes;
