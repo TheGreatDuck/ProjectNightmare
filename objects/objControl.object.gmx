@@ -524,6 +524,7 @@ When you change or restart rooms, the game would leak ~3 KB of memory.
 As a workaround, only one room must be utilized during the whole session.*/
 global.levelRoom = 0; //This is the current room WITHIN the level, unrelated to global.currentRoom.
 global.particles = ds_list_create(); /*PN uses a particles list to iterate through each particles (which is a list of data). Should be marginally faster than objects.*/
+global.currentNESWall = noone;
 pauseBg = -1;
 pauseX = -463;
 healthY = -46;

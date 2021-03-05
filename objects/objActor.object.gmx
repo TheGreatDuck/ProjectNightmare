@@ -30,6 +30,7 @@
 hp = 0;
 target = noone;
 //Flags
+tag = 0; //Used for checking objects with the appropriate tag set by the level's author(s).
 uID = noone; //Used to prevent duplication across room transition i.e. having a clone of a holdable from a previous room.
 fOnGround = true; //Used to check if the actor is on the ground, to do specific things.
 fGravity = true;

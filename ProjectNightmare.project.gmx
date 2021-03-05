@@ -390,6 +390,15 @@
       <script>scripts\scr_get_DLL_function.gml</script>
       <script>scripts\scr_call_DLL_function.gml</script>
     </scripts>
+    <scripts name="NES Walls">
+      <script>scripts\nes_create.gml</script>
+      <script>scripts\nes_update.gml</script>
+      <script>scripts\nes_add_pipe.gml</script>
+      <script>scripts\nes_add_player.gml</script>
+      <script>scripts\nes_remove_player.gml</script>
+      <script>scripts\nes_draw.gml</script>
+      <script>scripts\nes_destroy.gml</script>
+    </scripts>
     <script>scripts\framerate_set.gml</script>
     <script>scripts\level_read_real.gml</script>
     <script>scripts\level_read_string.gml</script>
@@ -423,9 +432,9 @@
       <object>objects\objPlayerSpawn</object>
       <object>objects\objGoomba</object>
       <object>objects\objBomb</object>
+      <object>objects\objNESTrigger</object>
       <object>objects\objZapper</object>
       <object>objects\objNPC</object>
-      <object>objects\objDummy</object>
     </objects>
     <objects name="Special">
       <objects name="Parents">
@@ -441,6 +450,7 @@
       </objects>
       <object>objects\objTransition</object>
       <object>objects\objMessage</object>
+      <object>objects\objNESWall</object>
     </objects>
   </objects>
   <rooms name="rooms">

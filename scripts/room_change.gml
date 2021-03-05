@@ -2,11 +2,7 @@
 //Clears everything and switches to another room. This is a workaround for GM:S 1.4's room memory leaks.
 global.currentRoom = argument0;
 //---ROOM END---
-with (all)
-{
-    if (object_index == objControl) continue
-    instance_destroy();
-}
+with (all) if (object_index != objControl) instance_destroy();
 with (objControl)
 {
     c_world_destroy();
@@ -64,6 +60,7 @@ with (objControl)
     shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "lightDirection"), global.light[0], global.light[1], global.light[2]);
     shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "lightColor"), global.light[3], global.light[4], global.light[5], 1);
     shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "lightAmbient"), global.light[6], global.light[7], global.light[8], 1);
+    shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "animated"), false);
     shader_reset();
     tempData = json_decode(level_read_string(file)); //Get world data map
     //Start loading world data

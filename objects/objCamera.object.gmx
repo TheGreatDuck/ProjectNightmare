@@ -310,7 +310,7 @@ if (global.skybox != noone)
 //Draw world model
 texture_set_repeat(true);
 shader_set(sh_smf_animate);
-var i = 0, roomData = ds_map_find_value(global.worldData[0], global.levelRoom), roomTextures = roomData[| 1], roomModels = roomData[| 2];
+var i = 0, roomData = ds_map_find_value(global.worldData[0], global.levelRoom), roomTextures = roomData[| 1], roomModels = roomData[| 2], getAnimated = shader_get_uniform(sh_smf_animate, "animated");
 repeat (ds_list_size(roomModels))
 {
     smf_model_draw(roomModels[| i], texture_get(roomTextures[| i]));
@@ -343,9 +343,14 @@ with (objActor)
             break
             case (3): //Static model
             case (4): //Animated model
-                var posMatrix = matrix_build(x, y, bottom, faceRoll, facePitch, faceDir, scale, scale, scale), submodels = getSprite[| 0], bodygroups = getSprite[| 1];
+                var posMatrix = matrix_build(x, y, bottom, faceRoll, facePitch, faceDir, scale, scale, scale), submodels = getSprite[| 0], bodygroups = getSprite[| 1], animated = false;
                 matrix_set(matrix_world, posMatrix);
-                if (getType == 4) smf_animation_set_shader_uniforms(sh_smf_animate, frameSample);
+                if (getType == 4)
+                {
+                    animated = true;
+                    if !(is_undefined(frameSample)) smf_animation_set_shader_uniforms(sh_smf_animate, frameSample);
+                }
+                shader_set_uniform_f(getAnimated, animated);
                 //Submodels
                 i = 0;
                 repeat (ds_list_size(submodels))
@@ -369,9 +374,14 @@ with (objActor)
                     getType = sprite_type(sprite);
                     if (getType &gt; 2)
                     {
-                        var getSprite = sprite_get(sprite), submodels = getSprite[| 0], bodygroups = getSprite[| 1], size = scale / other.scale;
+                        var getSprite = sprite_get(sprite), submodels = getSprite[| 0], bodygroups = getSprite[| 1], size = scale / other.scale, animated = false;
                         matrix_set(matrix_world, matrix_multiply(matrix_multiply(matrix_build(0, 0, 0, -90, 0, 0, size, size, size), smf_matrix_create_from_dualquat(smf_sample_get_bone_orientation(other.frameSample, 12))), posMatrix));
-                        if (getType == 4) smf_animation_set_shader_uniforms(sh_smf_animate, frameSample);
+                        if (getType == 4)
+                        {
+                            animated = true;
+                            if !(is_undefined(frameSample)) smf_animation_set_shader_uniforms(sh_smf_animate, frameSample);
+                        }
+                        shader_set_uniform_f(getAnimated, animated);
                         //Submodels
                         i = 0;
                         repeat (ds_list_size(submodels))
@@ -411,6 +421,11 @@ repeat (ds_list_size(global.particles) / 12)
     var size = global.particles[| i + cParScale] * 0.5;
     draw_image_ext(sprite_get(global.particles[| i + cParSprite]), global.particles[| i + cParFrame], 0, 0, size, -size, 0, c_white, 1);
     i += 12;
+}
+with (objNESWall)
+{
+    matrix_set(matrix_world, matrix);
+    nes_draw(pointer);
 }
 smf_matrix_reset();
 </string>

@@ -19,6 +19,7 @@ else
         case (objMario): break
         default: instance_destroy();
     }
+    with (objNESWall) instance_destroy();
     value = ds_map_find_value(global.worldData[0], global.levelRoom);
     c_world_remove_object(value[| 4]);
 }
@@ -56,7 +57,14 @@ if !(is_undefined(actors)) repeat (ds_list_size(actors) * 0.2)
             if (actor == objMario)
             {
                 (instance_create(x, y, objZapper)).z = z;
-                (instance_create(x, y, objDummy)).z = z;
+                (instance_create(x - 16, y, objNESTrigger)).z = z;
+                with (instance_create(x + 128, y - 64, objNESWall))
+                {
+                    z = other.z + 160;
+                    pointer = nes_create(8, 8);
+                    nes_add_pipe(pointer, 0, 8, 8);
+                    matrix = matrix_build(x, y, z, 0, -90, 0, 1, 1, 1);
+                }
             }
             faceDir = actors[| i + 3];
         }

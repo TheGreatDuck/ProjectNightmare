@@ -25,11 +25,10 @@
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>event_inherited();
-sprite = cSprZapper;
-scale = 1.25;
-height = 8;
-holdableType = 1;
+            <string>//Dummy NES wall trigger
+event_inherited();
+sprite = cSprZap;
+height = 12;
 actor_create();
 </string>
           </argument>
@@ -53,12 +52,21 @@ actor_create();
         <arguments>
           <argument>
             <kind>1</kind>
-            <string>faceDir += 5;
-if (target != noone &amp;&amp; global.bind[8, 3])
+            <string>if (target != noone)
 {
-    particle_create(target.x + lengthdir_x(12, target.faceDir), target.y + lengthdir_y(12, target.faceDir), target.z + 5, cParTypeZap);
-    target.customFrameIndex = 0.05;
-    d3d_sound_play(cSndZap, false, 1);
+    with (objNESWall)
+    {
+        if (tag == other.tag)
+        {
+            with (other.target) //Remove player from world
+            {
+                player_drop_holdable(0, 0, 0);
+                instance_destroy();
+            }
+            nes_add_player(pointer, other.id);
+            global.currentNESWall = id;
+        }
+    }
 }
 </string>
           </argument>
