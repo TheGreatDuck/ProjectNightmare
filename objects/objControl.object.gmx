@@ -26,6 +26,7 @@
           <argument>
             <kind>1</kind>
             <string>///Load game
+scr_initDelayedCallingDLL();
 discord_init_dll();
 discord_init_app("732560402873057320");
 draw_set_circle_precision(64);

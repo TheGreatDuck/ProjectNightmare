@@ -7,7 +7,8 @@ global.delayCallDLL_setDelayedOutput           = external_define("CallDelayedFun
 global.delayCallDLL_getHasOutput               = external_define("CallDelayedFunctions.dll", "getHasOutput",               dll_cdecl, ty_real,   0);
 global.delayCallDLL_isThereDelayedFunctionCall = external_define("CallDelayedFunctions.dll", "isThereDelayedFunctionCall", dll_cdecl, ty_real,   0);
 
-scr_delayCallDLL_exportWrapperFunctions();
+//This function is missing:
+//scr_delayCallDLL_exportWrapperFunctions();
 
 global.init_dll_function_call_loop = external_define("CallDelayedFunctions.dll", "init_dll_function_call_loop", dll_cdecl, ty_real, 0);
 global.call_dll_function = external_define("CallDelayedFunctions.dll", "call_dll_function", dll_cdecl, ty_real, 1, ty_real);
