@@ -339,8 +339,8 @@ void walk_GML_libraries(FILE* projectFileOut, FILE* variableWrapperDeclaration, 
     walk_GML_header_to_make_exporter(outputFile, projectFileOut, "gameMakerFunctions\\3DGraphics\\d3d_transform.hpp");
     walk_GML_header_to_make_exporter(outputFile, projectFileOut, "gameMakerFunctions\\gameGraphics\\fontsAndText.hpp");
     walk_GML_header_to_make_exporter(outputFile, projectFileOut, "gameMakerFunctions\\gameGraphics\\drawingShapes.hpp");
-    walk_GML_header_to_make_exporter(outputFile, projectFileOut, "gameMakerFunctions\\gameGraphics\\theWindow.hpp");
-    walk_GML_header_to_make_exporter(outputFile, projectFileOut, "gameMakerFunctions\\gameGraphics\\theDisplay.hpp");
+    //walk_GML_header_to_make_exporter(outputFile, projectFileOut, "gameMakerFunctions\\gameGraphics\\theWindow.hpp");
+    //walk_GML_header_to_make_exporter(outputFile, projectFileOut, "gameMakerFunctions\\gameGraphics\\theDisplay.hpp");
     walk_GML_header_to_make_exporter(outputFile, projectFileOut, "gameMakerFunctions\\userInteraction\\mouse.hpp");
     walk_GML_header_to_make_exporter(outputFile, projectFileOut, "gameMakerFunctions\\userInteraction\\keyboard.hpp");
     walk_GML_header_to_make_exporter(outputFile, projectFileOut, "gameMakerFunctions\\userInteraction\\joystick.hpp");
@@ -355,8 +355,8 @@ void walk_GML_libraries(FILE* projectFileOut, FILE* variableWrapperDeclaration, 
     walk_GML_header_to_make_wrapper(projectFileOut, "gameMakerFunctions\\3DGraphics\\d3d_transform.hpp");
     walk_GML_header_to_make_wrapper(projectFileOut, "gameMakerFunctions\\gameGraphics\\fontsAndText.hpp");
     walk_GML_header_to_make_wrapper(projectFileOut, "gameMakerFunctions\\gameGraphics\\drawingShapes.hpp");
-    walk_GML_header_to_make_wrapper(projectFileOut, "gameMakerFunctions\\gameGraphics\\theWindow.hpp");
-    walk_GML_header_to_make_wrapper(projectFileOut, "gameMakerFunctions\\gameGraphics\\theDisplay.hpp");
+    //walk_GML_header_to_make_wrapper(projectFileOut, "gameMakerFunctions\\gameGraphics\\theWindow.hpp");
+    //walk_GML_header_to_make_wrapper(projectFileOut, "gameMakerFunctions\\gameGraphics\\theDisplay.hpp");
     walk_GML_header_to_make_wrapper(projectFileOut, "gameMakerFunctions\\userInteraction\\mouse.hpp");
     walk_GML_header_to_make_wrapper(projectFileOut, "gameMakerFunctions\\userInteraction\\keyboard.hpp");
     walk_GML_header_to_make_wrapper(projectFileOut, "gameMakerFunctions\\userInteraction\\joystick.hpp");

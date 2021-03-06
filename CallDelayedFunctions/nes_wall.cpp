@@ -6,8 +6,8 @@ GMEXPORT double create_nes_wall(double width, double height)
 {
     nes_wall* wall = new nes_wall();
     wall->linkPointer = NULL;
-    wall->pipeImage = sprite_add("tex_SMB_pipe_strip4.png",4,0,0,0,0);
-    wall->linkImage = sprite_add("tex_2DLink_strip12.png",12,0,0,0,0);
+    wall->pipeImage = 0;
+    wall->linkImage = 1;
     return (double)(int)wall;
 }
 
@@ -25,7 +25,7 @@ GMEXPORT double draw_nes_wall(double wall_double)
     if (wall->linkPointer)
         drawLink(wall);
     for (auto p : wall->pipeVector)
-        draw_sprite(wall->pipeImage, p.dir, p.x, p.y);
+        d3d_draw_floor(p.x, p.y, 0, p.x + 16, p.y + 16, 0, wall->pipeImage, 1, 1);
     return 1.0;
 }
 
