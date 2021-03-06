@@ -1,0 +1,1 @@
+///nes_update(id)

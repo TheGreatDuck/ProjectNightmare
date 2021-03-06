@@ -54,7 +54,7 @@ holdableType = 0;
             <string>///Move to holder's position
 if (timer[0] == -65536) fPushable = abs(hSpeed) &gt; 0.1 || abs(vSpeed) &gt; 0.1 || abs(zSpeed) &gt; 0.1;
 else timer_tick(0);
-if (target)
+if (target != noone)
 {
     fVisible = sprite_type(sprite) &lt; 3;
     fShadow = false;

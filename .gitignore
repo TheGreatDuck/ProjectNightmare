@@ -1,2 +1,12 @@
 
 rooms/rmPause.room.gmx
+CallDelayedFunctions/libgcc_s_dw2-1.dll
+CallDelayedFunctions/libwinpthread-1.dll
+CallDelayedFunctions/gameMakerGenLibrary.hpp
+CallDelayedFunctions/callGameLoop.hpp
+CallDelayedFunctions/getGameLoop.hpp
+CallDelayedFunctions/gmon.out
+CallDelayedFunctions/obj/Release/delayed_function_calls.o
+CallDelayedFunctions/obj/Release/dynamicWrapperGeneration.o
+CallDelayedFunctions/ProjectNightmare.project.gmx
+CallDelayedFunctions/WrapperGenerator.exe

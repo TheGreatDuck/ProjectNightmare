@@ -43,6 +43,7 @@ flinch = 0;
 sensX = 10;
 sensY = 10;
 previousZ = 0;
+zTo = 0;
 //Set global variables
 global.cX = 0;
 global.cY = 0;
@@ -125,23 +126,24 @@ if (window_has_focus()) cursor = cr_default;
 window_set_cursor(cursor);
 if (target &amp;&amp; instance_exists(target))
 {
-    if !(cutscene_exists()) mouse_look(false);
+    if !(cutscene_exists()) mouse_look(true);
     if (!cutscene_exists() || (cutscene_exists() &amp;&amp; global.follow))
     {
-        var tZ = previousZ, lookVec = lengthdir_y(8, target.moveDir);
+        var tZ = previousZ;
         if (target.z &lt; previousZ - 10|| target.z &gt; previousZ + 40) tZ = target.z;
         if (target.fOnGround &amp;&amp; target.shadowZ != -65536) previousZ = target.shadowZ + target.half;
-        var rangeTo = 80, zTo = max(tZ, target.shadowZ) + 16, camZTo = zTo - 2, lookX = lengthdir_x(lookVec, faceDir + 90), lookY = lengthdir_y(lookVec, faceDir + 90);
-        if (c_raycast_world(target.x, target.y, zTo, target.x - lengthdir_x(80, faceDir) - lookX, target.y - lengthdir_y(80, faceDir) - lookY, zTo, 1))
+        var rangeTo = 80, zGoto = max(tZ, target.shadowZ) + 16; //, camZTo = zTo - 2;
+        if (c_raycast_world(target.x, target.y, zGoto, target.x - lengthdir_x(lengthdir_x(80, faceDir), facePitch), target.y - lengthdir_x(lengthdir_y(80, faceDir), facePitch), zGoto + lengthdir_y(80, facePitch), 1))
         {
             rangeTo = point_distance_3d(target.x, target.y, target.z, c_hit_x(), c_hit_y(), c_hit_z());
-            camZTo = zTo + (target.z - tZ) / (point_distance(x, y, target.x, target.y) / 16) - 10;
+            camZTo = zGoto + (target.z - tZ) / (point_distance(x, y, target.x, target.y) / 16) - 10;
         }
         range = lerp(range, rangeTo, 0.2);
-        x = target.x - lengthdir_x(range, faceDir) - lookX;
-        y = target.y - lengthdir_y(range, faceDir) - lookY;
-        z = lerp(z, max(zTo, global.minZ), 0.2);
-        facePitch = lerp_angle(facePitch, point_pitch(x, y, z, target.x, target.y, camZTo), 0.2);
+        x = target.x - lengthdir_x(lengthdir_x(range, faceDir), facePitch);
+        y = target.y - lengthdir_x(lengthdir_y(range, faceDir), facePitch);
+        zTo = lerp(zTo, max(zGoto, global.minZ), 0.2);
+        z = zTo + lengthdir_y(range, facePitch);
+        //facePitch = lerp_angle(facePitch, point_pitch(x, y, z, target.x, target.y, camZTo), 0.2);
         global.cX = x;
         global.cY = y;
         global.cZ = z;
@@ -294,7 +296,7 @@ if (target &amp;&amp; instance_exists(target))
 draw_set_color(c_white);
 var realPitch = facePitch;
 if (mode == 1) realPitch = clamp(facePitch + flinch, -89.5, 89.5); //Add flinching if first person mode
-var cCos = dcos(global.cD), cSin = dsin(global.cD), cTan = dtan(realPitch), i = 0;
+var cCos = dcos(global.cD), cSin = dsin(global.cD), cTan = dtan(realPitch);
 d3d_set_projection_ext(global.cX, global.cY, global.cZ, global.cX + cCos, global.cY - cSin, global.cZ + cTan, 0, 0, 1, 45, view_wview[0] / view_hview[0], 1, global.maxRender);
 audio_listener_position(global.cX, global.cY, global.cZ);
 audio_listener_orientation(cCos, -cSin, cTan, 0, 0, 1);
@@ -307,64 +309,48 @@ if (global.skybox != noone)
 }
 //Draw world model
 texture_set_repeat(true);
-shader_set(shWorld);
-shader_set_uniform_f(shader_get_uniform(shWorld, "fogStart"), global.fog[0]);
-shader_set_uniform_f(shader_get_uniform(shWorld, "fogEnd"), global.fog[1]);
-shader_set_uniform_f(shader_get_uniform(shWorld, "fogColor"), global.fog[2], global.fog[3], global.fog[4], 1);
-shader_set_uniform_f(shader_get_uniform(shWorld, "lightDirection"), global.light[0], global.light[1], global.light[2]);
-shader_set_uniform_f(shader_get_uniform(shWorld, "lightColor"), global.light[3], global.light[4], global.light[5], 1);
-shader_set_uniform_f(shader_get_uniform(shWorld, "lightAmbient"), global.light[6], global.light[7], global.light[8], 1);
-i = 0;
-repeat (ds_list_size(global.worldModel[0]))
+shader_set(sh_smf_animate);
+var i = 0, roomData = ds_map_find_value(global.worldData[0], global.levelRoom), roomTextures = roomData[| 1], roomModels = roomData[| 2], getAnimated = shader_get_uniform(sh_smf_animate, "animated");
+repeat (ds_list_size(roomModels))
 {
-    vertex_submit(ds_list_find_value(global.worldModel[0], i), pr_trianglelist, texture_get(ds_list_find_value(global.worldModel[1], i)));
+    smf_model_draw(roomModels[| i], texture_get(roomTextures[| i]));
     i++;
 }
-shader_reset();
-texture_set_repeat(false);
-//Draw actors
+//Draw actors with sprites
 with (objActor)
 {
     if (fVisible &amp;&amp; sprite != -1)
-    { 
+    {
         var getSprite = sprite_get(sprite), getType = sprite_type(sprite);
         switch (getType)
         {
-            case (0):
-            case (1):
-            case (2):
-                var cFrame = frame, size = scale * 0.5;
-                if (getType == 2)
+            case (0): //Sprite
+            case (1): //4-directional sprite
+            case (2): //Billboard sprite
+                var cFrame = frame, size = scale * 0.5, spritePitch = -90, w = size * image_get_width(getSprite), xOffset = image_get_xoffset(getSprite) * 0.5;
+                if (getType)
                 {
-                    shader_set(shBillboard);
-                    matrix_set(matrix_world, matrix_build(x, y, bottom, 0, 0, 0, 1, 1, 1));
-                }
-                else
-                {
-                    matrix_set(matrix_world, matrix_build(x, y, bottom, -90, global.cD - 90, 0, 1, 1, 1));
                     if (getType == 1)
                     {
                         var dir = (round((point_direction(x, y, global.cX, global.cY) - faceDir) / 90)) mod (4), frames = image_get_number(getSprite);
                         while (dir &lt; 0) dir += 4;
                         cFrame = min(((frames * 0.25) * dir) + frame, frames - 1);
                     }
+                    if (getType == 2) spritePitch = global.cP - 90;
                 }
-                draw_image_ext(getSprite, cFrame, 0, 0, size, -size, 0, c_white, 1);
-                shader_reset();
+                matrix_set(matrix_world, matrix_build(x - lengthdir_x(xOffset, global.cD - 90), y - lengthdir_y(xOffset, global.cD - 90), bottom + image_get_yoffset(getSprite) * 0.5, spritePitch, global.cD - 90, 0, w, w, -size * image_get_height(getSprite)));
+                smf_model_draw(global.worldData[1], ds_list_find_value(global.spr[| sprite], 2 + cFrame));
             break
-            case (3):
-            case (4):
-                var posMatrix = matrix_build(x, y, bottom, faceRoll, facePitch, faceDir, scale, scale, scale), submodels = getSprite[| 0], bodygroups = getSprite[| 1], frameSample = undefined;
+            case (3): //Static model
+            case (4): //Animated model
+                var posMatrix = matrix_build(x, y, bottom, faceRoll, facePitch, faceDir, scale, scale, scale), submodels = getSprite[| 0], bodygroups = getSprite[| 1], animated = false;
                 matrix_set(matrix_world, posMatrix);
-                shader_set(sh_smf_animate);
-                shader_set_uniform_f(shader_get_uniform(sh_smf_animate, "lightDirection"), -global.light[0], -global.light[1], -global.light[2]);
                 if (getType == 4)
                 {
-                    var animation = getSprite[| 2 + anim];
-                    if !(is_undefined(customFrame)) frameSample = smf_sample_create_from_frame(customFrame);
-                    else frameSample = smf_sample_blend(animation[| 2 + frame], animation[| 2 + (frame + 1) mod (ds_list_size(animation) - 2)], frac(frame));
-                    smf_animation_set_shader_uniforms(sh_smf_animate, frameSample);
+                    animated = true;
+                    if !(is_undefined(frameSample)) smf_animation_set_shader_uniforms(sh_smf_animate, frameSample);
                 }
+                shader_set_uniform_f(getAnimated, animated);
                 //Submodels
                 i = 0;
                 repeat (ds_list_size(submodels))
@@ -388,15 +374,14 @@ with (objActor)
                     getType = sprite_type(sprite);
                     if (getType &gt; 2)
                     {
-                        var getSprite = sprite_get(sprite), submodels = getSprite[| 0], bodygroups = getSprite[| 1], holdFrameSample = undefined, size = scale / other.scale;
-                        matrix_set(matrix_world, matrix_multiply(matrix_multiply(matrix_build(0, 0, 0, 0, -180, -180, size, size, size), smf_matrix_create_from_dualquat(smf_sample_get_bone_orientation(frameSample, 15))), posMatrix));
+                        var getSprite = sprite_get(sprite), submodels = getSprite[| 0], bodygroups = getSprite[| 1], size = scale / other.scale, animated = false;
+                        matrix_set(matrix_world, matrix_multiply(matrix_multiply(matrix_build(0, 0, 0, -90, 0, 0, size, size, size), smf_matrix_create_from_dualquat(smf_sample_get_bone_orientation(other.frameSample, 12))), posMatrix));
                         if (getType == 4)
                         {
-                            var animation = getSprite[| 2 + anim];
-                            if !(is_undefined(customFrame)) holdFrameSample = smf_sample_create_from_frame(customFrame);
-                            else holdFrameSample = smf_sample_blend(animation[| 2 + frame], animation[| 2 + (frame + 1) mod (ds_list_size(animation) - 2)], frac(frame));
-                            smf_animation_set_shader_uniforms(sh_smf_animate, holdFrameSample);
+                            animated = true;
+                            if !(is_undefined(frameSample)) smf_animation_set_shader_uniforms(sh_smf_animate, frameSample);
                         }
+                        shader_set_uniform_f(getAnimated, animated);
                         //Submodels
                         i = 0;
                         repeat (ds_list_size(submodels))
@@ -417,27 +402,30 @@ with (objActor)
                         }
                     }
                 }
-                shader_reset();
             break
         }
     }
     if (fShadow &amp;&amp; shadowZ != -65536 &amp;&amp; global.cZ &gt; shadowZ)
     {
-        matrix_set(matrix_world, shadowMatrix);
+        matrix_set(matrix_world, matrix_build(x, y, shadowZ, 0, floorPitch, floorAngle, 1, 1, 1));
         var shadowSize = 2 * radius;
         draw_image_stretched_ext(global.bg[| cBgShadow], 0, -radius, -radius, shadowSize, shadowSize, c_white, 0.5);
     }
 }
+shader_reset();
+texture_set_repeat(false);
 i = 0;
-repeat (ds_list_size(global.particles))
+repeat (ds_list_size(global.particles) / 12)
 {
-    shader_set(shBillboard);
-    var particle = global.particles[| i];
-    matrix_set(matrix_world, matrix_build(particle[| cParX], particle[| cParY], particle[| cParZ], 0, 0, 0, 1, 1, 1));
-    var size = particle[| cParScale] * 0.5;
-    draw_image_ext(sprite_get(particle[| cParSprite]), particle[| cParFrame], 0, 0, size, -size, 0, c_white, 1);
-    shader_reset();
-    i++;
+    matrix_set(matrix_world, matrix_build(global.particles[| i + cParX], global.particles[| i + cParY], global.particles[| i + cParZ], global.cP - 90, global.cD - 90, 0, 1, 1, 1));
+    var size = global.particles[| i + cParScale] * 0.5;
+    draw_image_ext(sprite_get(global.particles[| i + cParSprite]), global.particles[| i + cParFrame], 0, 0, size, -size, 0, c_white, 1);
+    i += 12;
+}
+with (objNESWall)
+{
+    matrix_set(matrix_world, matrix);
+    nes_draw(pointer);
 }
 smf_matrix_reset();
 </string>

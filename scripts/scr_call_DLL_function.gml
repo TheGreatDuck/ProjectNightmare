@@ -13,3 +13,4 @@ while (external_call(global.is_dll_function_call_complete) == 0)
     scr_delayCallDLL_callQueuedFunctions();
 }
 scr_delayCallDLL_callQueuedFunctions();
+return external_call(global.get_dll_function_call_return_value);

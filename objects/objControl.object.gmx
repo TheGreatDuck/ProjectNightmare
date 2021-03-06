@@ -33,8 +33,6 @@ d3d_set_perspective(true);
 d3d_set_hidden(true);
 d3d_set_culling(true);
 d3d_set_shading(false);
-d3d_light_define_ambient(c_dkgray);
-d3d_light_define_direction(1, 0, 0, -1, c_white);
 draw_set_alpha_test(true);
 draw_set_alpha_test_ref_value(0);
 audio_falloff_set_model(audio_falloff_exponent_distance);
@@ -143,7 +141,8 @@ global.spr[| id] = a list containing sprite data:
         1 = 4-directional
         2 = billboard
         3 = static model
-        4 = animated model*/
+        4 = animated model
+    2... = sprite as texture pointers (undefined if sprite is a model)*/
 global.spr = ds_list_create();
 image_stream_start("spr", 2048, 2048, 0, true, false);
 var file = file_find_first(cDirSpr + "*.png", 0), tempData = ds_priority_create();
@@ -152,7 +151,7 @@ while (file != "")
     var list = ds_list_create(), slot = string_digits(file), table = file_text_open_read(cDirSpr + "ani.txt"), frames = 1, rotates = false, xOfs = 0, yOfs = 0, info;
     while !(file_text_eof(table)) //Look for animation data in the animation data table
     {
-        info = string_parse(level_read_string(table), "|");
+        info = string_parse(level_read_string(table));
         if (info[| 0] == slot) //If the parsed string belongs to this sprite...
         {
             frames = real(info[| 1]); //Set amount of frames this sprite has
@@ -166,7 +165,7 @@ while (file != "")
     }
     //Close the lookup table after and add the sprites to the atlas
     file_text_close(table);
-    image_stream_add("spr", slot, cDirSpr + file, frames, xOfs, yOfs);
+    image_stream_add_3d("spr", slot, cDirSpr + file, frames, xOfs, yOfs);
     ds_list_add(list, "sprite", rotates);
     ds_priority_add(tempData, list, real(slot));
     file = file_find_next();
@@ -201,12 +200,15 @@ i = 0;
 repeat (ds_priority_size(tempData))
 {
     var list = ds_priority_find_min(tempData);
-    if (list[| 0] == "sprite") ds_list_replace(list, 0, image_group_find_image("spr", string(i)));
+    if (list[| 0] == "sprite")
+    {
+        ds_list_replace(list, 0, image_group_find_image("spr", string(i)));
+        for (var j = 0, p = list[| 0]; j &lt; image_get_number(p); j++) ds_list_add(list, image_get_texture(p, j)); //Add frames to sprite data list
+    }
     ds_list_add(global.spr, list);
     ds_priority_delete_min(tempData);
     i++;
 }
-ds_priority_destroy(tempData);
 //Load model data for each model list
 for (i = 0; i &lt; ds_list_size(global.spr); i++)
 {
@@ -223,7 +225,7 @@ for (i = 0; i &lt; ds_list_size(global.spr); i++)
         {
             str = level_read_string(table);
             if (string_copy(str, 1, 1) != "0") continue //Ignore all strings that don't have the "submodel" header (0)
-            info = string_parse(str, "|");
+            info = string_parse(str);
             if (info[| 1] == slot) //If the parsed string belongs to this submodel...
             {
                 for (var j = 2; j &lt; ds_list_size(info); j++) ds_list_add(list, real(info[| j])); //Add all skins from the list
@@ -251,7 +253,7 @@ for (i = 0; i &lt; ds_list_size(global.spr); i++)
         {
             str = level_read_string(table);
             if (string_copy(str, 1, 1) != "1") continue //Ignore all strings that don't have the "bodygroup" header (1)
-            info = string_parse(str, "|");
+            info = string_parse(str);
             if (info[| 1] == file) //If the parsed string belongs to this bodygroup...
             {
                 ds_list_add(list, real(info[| 2])); //Add bodygroup material from parsed string
@@ -289,7 +291,7 @@ for (i = 0; i &lt; ds_list_size(global.spr); i++)
             {
                 str = level_read_string(table);
                 if (string_copy(str, 1, 1) != "2") continue //Ignore all strings that don't have the "animation" header (2)
-                info = string_parse(str, "|");
+                info = string_parse(str);
                 if (info[| 1] == slot) //If the parsed string belongs to this submodel...
                 {
                     type = real(info[| 2]); //Get animation keyframe cycle type
@@ -302,12 +304,18 @@ for (i = 0; i &lt; ds_list_size(global.spr); i++)
             file_text_close(table);
             ds_list_add(list, animation, type);
             for (j = 0; j &lt; frames; j++) ds_list_add(list, smf_sample_create(animation, type, j / frames));
-            ds_list_insert(modelList, 2 + real(slot), list);
+            ds_priority_add(tempData, list, real(slot));
             file = file_find_next();
         }
         file_find_close();
+        repeat (ds_priority_size(tempData))
+        {
+            ds_list_add(modelList, ds_priority_find_min(tempData));
+            ds_priority_delete_min(tempData);
+        }
     }
 }
+ds_priority_destroy(tempData);
 /*---BACKGROUNDS---
 They have no frames at all, so we can store way less data than sprites or textures.
 The background files are located in data\gfx\bg and MUST be PNGs and numbered.
@@ -350,7 +358,7 @@ while (file != "")
     var slot = string_digits(file), table = file_text_open_read(cDirTex + "ani.txt"), frames = 1, spd = 1, info;
     while !(file_text_eof(table)) //Look for animation data in the animation data table
     {
-        info = string_parse(file_text_read_string(table), "|");
+        info = string_parse(file_text_read_string(table));
         if (info[| 0] == slot) //If the parsed string belongs to this texture...
         {
             frames = real(info[| 1]); //Set amount of frames this texture has
@@ -448,7 +456,7 @@ while (file != "")
     var table = file_text_open_read(cDirBgm + "loop.txt"), info;
     while !(file_text_eof(table)) //Look for loop points in the music data table
     {
-        info = string_parse(file_text_read_string(table), "|");
+        info = string_parse(file_text_read_string(table));
         if (info[| 0] == slot) //If the parsed string belongs to this track...
         {
             FMODGMS_Snd_Set_LoopPoints(track, FMODGMS_Util_SecondsToSamples(real(info[| 1]), 44100), FMODGMS_Util_SecondsToSamples(real(info[| 2]), 44100)); //Set loop points for track
@@ -466,9 +474,6 @@ while (file != "")
 file_find_close();
 //Prepare 3D collision system
 c_init();
-worldShape = -1;
-worldObject = -1;
-global.world = -1;
 //Level properties
 for (i = 0; i &lt; 2; i++)
 {
@@ -477,20 +482,26 @@ for (i = 0; i &lt; 2; i++)
     global.channel[i] = FMODGMS_Chan_CreateChannel();
     global.levelMusic[i] = noone;
     global.musicVolume[i] = !i;
-    /*global.worldModel has a list of vertex buffers that are rendered by using a fake "vertex batching" method
-    to give the illusion of displaying multiple textures on one vertex buffer. Under the hood, it's only
-    rendering multiple vertex buffers as parts of the world, depending on how many textures are used in the map.
-    global.worldModel[0] contains world model segments
-    global.worldModel[1] contains the texture ID for each segment
-    global.worldModel[2] contains the format used by vertex buffers*/
-    global.worldModel[i] = ds_list_create();
 }
-vertex_format_begin();
-vertex_format_add_position_3d();
-vertex_format_add_normal();
-vertex_format_add_textcoord();
-vertex_format_add_color();
-global.worldModel[2] = vertex_format_end();
+/*global.worldData[0] is a ds_map that contains world data using the following format:
+    key = room ID
+    value = room data list, where the following positions contain:
+            0 = actors list
+            1 = texture IDs list
+            2 = world models list
+            3 = collision shape
+            4 = collision object
+global.worldData[1] contains the vertex buffer used by sprites in 3D*/
+global.worldData[0] = ds_map_create();
+global.worldData[1] = vertex_create_buffer();
+vertex_begin(global.worldData[1], SMF_format);
+smf_add_vertex(global.worldData[1], 0, 1, 0, 0, 0, 1, 0, 1, c_white, 1, c_white, 1);
+smf_add_vertex(global.worldData[1], 0, 0, 0, 0, 0, 1, 0, 0, c_white, 1, c_white, 1);
+smf_add_vertex(global.worldData[1], 1, 1, 0, 0, 0, 1, 1, 1, c_white, 1, c_white, 1);
+smf_add_vertex(global.worldData[1], 0, 0, 0, 0, 0, 1, 0, 0, c_white, 1, c_white, 1);
+smf_add_vertex(global.worldData[1], 1, 0, 0, 0, 0, 1, 1, 0, c_white, 1, c_white, 1);
+smf_add_vertex(global.worldData[1], 1, 1, 0, 0, 0, 1, 1, 1, c_white, 1, c_white, 1);
+vertex_end(global.worldData[1]);
 global.fog[0] = 0;
 global.fog[1] = 65536;
 for (i = 2; i &lt; 5; i++) global.fog[i] = 0;
@@ -507,10 +518,13 @@ global.roomName = "Loading"; //Used for Discord Rich Presence
 global.roomIcon = 0; //Also for RPC. The number corresponds to which large icon key should be used.
 global.minZ = 0; //The minimal Z of the level. Used for deleting actors below this position.
 global.deltaTime = 60 / 1000000 * delta_time;
+gameLoop = 0;
 global.currentRoom = -2; /*PN uses a different room system to get around the memory leak issues with GameMaker: Studio 1.4 involving rooms.
 When you change or restart rooms, the game would leak ~3 KB of memory.
 As a workaround, only one room must be utilized during the whole session.*/
+global.levelRoom = 0; //This is the current room WITHIN the level, unrelated to global.currentRoom.
 global.particles = ds_list_create(); /*PN uses a particles list to iterate through each particles (which is a list of data). Should be marginally faster than objects.*/
+global.currentNESWall = noone;
 pauseBg = -1;
 pauseX = -463;
 healthY = -46;
@@ -618,6 +632,7 @@ repeat (14)
                 global.bind[i, 5] = global.bind[i, 2];
                 global.bind[i, 6] = global.bind[i, 2];
         }
+        if (gamepad_button_check_pressed(0, conBind)) global.bind[i, 3] = true;
         global.bind[i, 4] = gamepad_button_check_released(0, conBind);
     }
     else
@@ -629,19 +644,21 @@ repeat (14)
             case (mb_middle):
             case (mb_right):
                 global.bind[i, 2] = mouse_check_button(keyBind);
+                if (mouse_check_button_pressed(keyBind)) global.bind[i, 3] = true;
                 global.bind[i, 4] = mouse_check_button_released(keyBind);
             break
             default:
                 global.bind[i, 2] = keyboard_check(keyBind); //Just key buttons
+                if (keyboard_check_pressed(keyBind)) global.bind[i, 3] = true;
                 global.bind[i, 4] = keyboard_check_released(keyBind);
         }
         global.bind[i, 5] = global.bind[i, 2];
         global.bind[i, 6] = global.bind[i, 2];
     }
-    global.bind[i, 3] = bind_hardcode_pressed(keyBind, conBind);
     i++;
 }
-while (global.deltaTime--)
+gameLoop += global.deltaTime;
+while (gameLoop)
 {
     with (all)
     {
@@ -661,6 +678,7 @@ while (global.deltaTime--)
         }
         clearInput = false;
     }
+    gameLoop--;
 }
 i = 0;
 repeat (14)
@@ -695,20 +713,18 @@ repeat (14)
             <string>///Update particles
 if (global.paused) exit
 var i = 0;
-repeat (ds_list_size(global.particles))
+repeat (ds_list_size(global.particles) / 12)
 {
-    var particle = global.particles[| i];
-    ds_list_replace(particle, cParFrame, particle[| cParFrame] + particle[| cParFrameSpd]);
-    if (particle[| cParFrame] &gt; image_get_number(sprite_get(particle[| cParSprite])) - 1)
+    global.particles[| i + cParFrame] = global.particles[| i + cParFrame] + global.particles[| i + cParFrameSpd];
+    if (global.particles[| i + cParFrame] &gt; image_get_number(sprite_get(global.particles[| i + cParSprite])) - 1)
     {
-        ds_list_destroy(particle);
-        ds_list_delete(global.particles, i);
+        repeat (12) ds_list_delete(global.particles, i);
         continue
     }
-    ds_list_replace(particle, cParX, particle[| cParX] + particle[| cParHSpeed]);
-    ds_list_replace(particle, cParY, particle[| cParY] + particle[| cParVSpeed]);
-    ds_list_replace(particle, cParZ, particle[| cParZ] + particle[| cParZSpeed]);
-    i++;
+    global.particles[| i + cParX] = global.particles[| i + cParX] + global.particles[| i + cParHSpeed];
+    global.particles[| i + cParY] = global.particles[| i + cParY] + global.particles[| i + cParVSpeed];
+    global.particles[| i + cParZ] = global.particles[| i + cParZ] + global.particles[| i + cParZSpeed];
+    i += 12;
 }
 </string>
           </argument>
@@ -765,6 +781,7 @@ image_group_destroy("spr");
 image_group_destroy("bg");
 image_group_destroy("tex");
 image_system_cleanup();
+directory_destroy("data");
 </string>
           </argument>
         </arguments>
@@ -846,6 +863,31 @@ window_set_fullscreen(!getFull);
           <argument>
             <kind>1</kind>
             <string>display_reset((display_aa != 4) * 4, false);
+</string>
+          </argument>
+        </arguments>
+      </action>
+    </event>
+    <event eventtype="9" enumb="80">
+      <action>
+        <libid>1</libid>
+        <id>603</id>
+        <kind>7</kind>
+        <userelative>0</userelative>
+        <isquestion>0</isquestion>
+        <useapplyto>-1</useapplyto>
+        <exetype>2</exetype>
+        <functionname></functionname>
+        <codestring></codestring>
+        <whoName>self</whoName>
+        <relative>0</relative>
+        <isnot>0</isnot>
+        <arguments>
+          <argument>
+            <kind>1</kind>
+            <string>var key = ds_map_find_next(global.worldData[0], global.levelRoom);
+if (is_undefined(key)) key = ds_map_find_first(global.worldData[0]);
+world_room_change(key, false);
 </string>
           </argument>
         </arguments>

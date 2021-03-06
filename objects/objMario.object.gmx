@@ -39,7 +39,7 @@ hurtSnd[2] = cSndMarioHurt3;
 hurtSnd[3] = cSndMarioHurt4;
 hurtSnd[4] = cSndMarioHurt5;
 deadSnd[0] = cSndMarioDead;
-scale = 1.25;
+scale = 0.4;
 blinkFrame = 0;
 actor_create();
 timer[0] = irandom_range(30, 300);
@@ -67,7 +67,7 @@ timer[0] = irandom_range(30, 300);
             <kind>1</kind>
             <string>///Mario's animation &amp; move test
 //Animation control
-if (holding != noone &amp;&amp; holding.holdableType)
+/*if (holding != noone &amp;&amp; holding.holdableType)
 {
     actor_create_custom_frame();
     var gunFrame = smf_frame_create(ds_list_find_value(ds_list_find_value(sprite_get(sprite), 9), 0), 2, customFrameIndex);
@@ -107,6 +107,8 @@ switch (anim)
     break
     case (cAniMarioLand):
     {
+        headDir[0] = 0;
+        headDir[1] = 0;
         bodygroup[0] = 0;
         bodygroup[1] = 0;
         if (frame &lt; 5) frameSpd = 0.3 + spd * 0.3;
@@ -118,6 +120,8 @@ switch (anim)
     }
     break
     case (cAniMarioSkid):
+        headDir[0] = 0;
+        headDir[1] = 0;
         frameSpd = 0.3;
         if (frame &gt; 8.5 - spd) anim = cAniMarioIdle;
     break
@@ -125,16 +129,11 @@ switch (anim)
         if (onGround)
         {
             if (spd &gt; 0.1)
-                if (spd &gt; 1.25)
-                {
-                    anim = cAniMarioRun;
-                    frameSpd = spd * 0.125;
-                }
-                else
-                {
-                    anim = cAniMarioWalk;
-                    frameSpd = spd * 0.4;
-                }
+            {
+                if (spd &gt; 1.25) anim = cAniMarioRun;
+                else anim = cAniMarioWalk;
+                frameSpd = spd * 0.25;
+            }
             else
             {
                 anim = cAniMarioIdle;
@@ -169,10 +168,133 @@ switch (anim)
             }
         }
         else anim = cAniMarioFall;
-}
-if (skin[1] &lt; 3)
+}*/
+switch (anim)
 {
-    skin[1] = floor(blinkFrame) - 2 * (blinkFrame &gt; 3);
+    case (cAniMarioJump):
+    case (cAniMarioJump2):
+        if (frame &lt; 8) frameSpd = 0.2;
+        else
+        {
+            frame = 9;
+            frameSpd = 0;
+        }
+    case (cAniMarioFall):
+        var isFalling = (anim != cAniMarioJump &amp;&amp; anim != cAniMarioJump2) &amp;&amp; (holding == noone || !holding.holdableType);
+        skin[4] = !isFalling * 2;
+        if (fOnGround)
+        {
+            skin[4] = 0;
+            frame = 0.5;
+            anim = cAniMarioLand + (spd &gt; 1.25);
+        }
+    break
+    case (cAniMarioLand):
+    case (cAniMarioLand2):
+    {
+        headDir[0] = 0;
+        headDir[1] = 0;
+        //bodygroup[0] = 0;
+        //bodygroup[1] = 0;
+        if (frame &lt; 11) frameSpd = max(0.45 + spd * 0.05, spd * 0.35);
+        else
+        {
+            anim = cAniMarioIdle + (spd &gt; 1.25) * 5;
+            frame = 0;
+        }
+    }
+    break
+    case (cAniMarioSkid):
+    case (cAniMarioSkid2):
+        headDir[0] = 0;
+        headDir[1] = 0;
+        frameSpd = 0.3;
+        if (frame &gt; 7.4 - spd)
+        {
+            anim = cAniMarioIdle + (spd &gt; 1.25) * 5;
+            frame = 0;
+        }
+    break
+    default:
+        if (onGround)
+        {
+            if (spd &gt; 0.1)
+            {
+                if (spd &gt; 1.25) anim = cAniMarioRun;
+                else anim = cAniMarioWalk;
+                frameSpd = spd * 0.25;
+                headDir[0] = 0;
+                headDir[1] = 0;
+            }
+            else
+            {
+                if (anim != cAniMarioIdle2 &amp;&amp; anim != cAniMarioIdle3 &amp;&amp; anim != cAniMarioIdle4)
+                {
+                    anim = cAniMarioIdle;
+                    frameSpd = 0.075;
+                    if (headDir[0])
+                    {
+                        var yaw = 0, pitch = 0;
+                        if (holding == noone)
+                        {
+                            var near = instance_nearest(x, y, objHoldable);
+                            if (near &amp;&amp; point_distance_3d(x, y, z, near.x, near.y, near.z) &lt;= 64)
+                            {
+                                yaw = clamp(angle_difference(faceDir, point_direction(x, y, near.x, near.y)), -45, 45);
+                                pitch = clamp(-point_pitch(x, y, z, near.x, near.y, near.z), -80, 80);
+                            }
+                        }
+                        headDir[0] = lerp_angle(headDir[0], yaw, 0.2);
+                        headDir[1] = lerp_angle(headDir[1], pitch, 0.2);
+                        if (is_undefined(customFrame)) actor_create_custom_frame();
+                        smf_frame_rotate_bone_global(customFrame, 4, 0, 0, 1, degtorad(headDir[0]));
+                        smf_frame_rotate_bone_global(customFrame, 4, 0, 1, 0, degtorad(headDir[1]));
+                    }
+                    else if (holding == noone)
+                    {
+                        var near = instance_nearest(x, y, objHoldable);
+                        if (near &amp;&amp; point_distance_3d(x, y, z, near.x, near.y, near.z) &lt;= 64)
+                        {
+                            headDir[0] = lerp_angle(headDir[0], clamp(angle_difference(faceDir, point_direction(x, y, near.x, near.y)), -45, 45), 0.2);
+                            headDir[1] = lerp_angle(headDir[1], clamp(-point_pitch(x, y, z, near.x, near.y, near.z), -45, 45), 0.2);
+                        }
+                    }
+                    if (holding == noone &amp;&amp; frame &gt; 7.8 &amp;&amp; !irandom(10))
+                    {
+                        anim = cAniMarioIdle2 + irandom(2);
+                        frame = 0;
+                        headDir[0] = 0;
+                        headDir[1] = 0;
+                    }
+                }
+                else
+                {
+                    var frames = 17.8;
+                    switch (anim)
+                    {
+                        case (cAniMarioIdle3): frames = 25.8; break
+                        case (cAniMarioIdle4):
+                            frames = 29.8;
+                            skin[2] = (frame &gt; 7 &amp;&amp; frame &lt; 18) * 5;
+                            skin[3] = skin[2];
+                            skin[4] = frame &gt; 7 &amp;&amp; frame &lt; 24;
+                        break
+                        default: frameSpd = 0.15;
+                    }
+                    if (holding != noone || frame &gt; frames)
+                    {
+                        anim = cAniMarioIdle;
+                        frame = 0;
+                    }
+                }
+            }
+        }
+        else anim = cAniMarioFall;
+}
+if (skin[2] &lt; 3)
+{
+    skin[2] = floor(blinkFrame) - 2 * (blinkFrame &gt; 3);
+    skin[3] = skin[2];
     if (timer_tick(0))
     {
         blinkFrame = 0.0001;
@@ -184,7 +306,12 @@ if (skin[1] &lt; 3)
         if (blinkFrame &gt; 3.999) blinkFrame = 0;
     }
 }
-if (z &lt; global.minZ) skin[1] = 5;
+if (z &lt; global.minZ)
+{
+    skin[2] = 5;
+    skin[3] = 5;
+    skin[4] = 1;
+}
 event_inherited();
 </string>
           </argument>

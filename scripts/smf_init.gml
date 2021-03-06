@@ -8,7 +8,8 @@ www.TheSnidr.com
 */
 
 //---------------Random macros-------------------\\
-globalvar SMF_MATIDENTITY; SMF_MATIDENTITY = matrix_build(0, 0, 0, 0, 0, 0, 1, 1, 1);
+globalvar SMF_MATIDENTITY;
+SMF_MATIDENTITY = matrix_build(0, 0, 0, 0, 0, 0, 1, 1, 1);
 
 //---------------SMF settings------------------\\
 globalvar SMF_format, SMF_format_bytes;
@@ -19,6 +20,7 @@ vertex_format_add_normal();         SMF_format_bytes += 3 * 4; //Adds three f32
 vertex_format_add_textcoord();       SMF_format_bytes += 2 * 4; //Adds two f32
 vertex_format_add_colour();          SMF_format_bytes += 1 * 4; //Adds four u8
 vertex_format_add_colour();          SMF_format_bytes += 1 * 4; //Adds four u8
+vertex_format_add_colour(); //World model vertex color (not in vanilla SMF)
 SMF_format = vertex_format_end();
 
 //---------------Animation module------------------\\

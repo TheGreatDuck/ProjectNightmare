@@ -30,6 +30,8 @@
 hp = 0;
 target = noone;
 //Flags
+tag = 0; //Used for checking objects with the appropriate tag set by the level's author(s).
+uID = noone; //Used to prevent duplication across room transition i.e. having a clone of a holdable from a previous room.
 fOnGround = true; //Used to check if the actor is on the ground, to do specific things.
 fGravity = true;
 fGhost = false; //Turn on if you don't want the actor to have collision checking.
@@ -59,12 +61,13 @@ sliding = false; //Used for sliding off of steep slopes.
 fric = 0; //Used for deacceleration.
 //Animation
 shadowZ = -9;
-shadowMatrix = SMF_MATIDENTITY;
 sprite = -1;
 frame = 0; //Similar to image_index.
+prevFrame = -1; //Used by animated models to prevent doing more unnecessary sample calculations.
 frameSpd = 0; //Similar to image_speed.
 customFrame = undefined; //Used for real-time bone manipulations. SLOW!
-//anim, skin and bodygroup are only used for animated models
+frameSample = undefined;
+//anim, skin and bodygroup are only used for models
 anim = 0;
 skin = 0;
 bodygroup = 0;
@@ -129,13 +132,11 @@ NOTE: disabling an actor's shadow will also disable speed changing and sliding o
 if (fShadow)
     if (c_raycast_world(x, y, z, x, y, z - 65536, 1))
     {
-        shadowZ = c_hit_z() + 0.1;
+        shadowZ = c_hit_z() + 0.5;
         var normalX = c_hit_nx(), normalY = c_hit_ny(), normalZ = c_hit_nz();
-        //Change the shadow's rotation using a matrix based off of the hit triangle's normals.
-        shadowMatrix = world_matrix_from_normal(c_hit_nx(), c_hit_ny(), normalZ, x, y, shadowZ, 1);
         //Get the angle of the hit triangle from the normals.
-        floorAngle = abs(radtodeg(arctan2(normalY, normalX)) - 180)
-        floorPitch = abs(radtodeg(arccos(-normalZ)) - 180);
+        floorAngle = abs(darctan2(normalY, normalX) - 180)
+        floorPitch = abs(darccos(-normalZ) - 180);
     }
     else
     {

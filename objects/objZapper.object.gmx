@@ -54,7 +54,7 @@ actor_create();
           <argument>
             <kind>1</kind>
             <string>faceDir += 5;
-if (target &amp;&amp; global.bind[8, 3])
+if (target != noone &amp;&amp; global.bind[8, 3])
 {
     particle_create(target.x + lengthdir_x(12, target.faceDir), target.y + lengthdir_y(12, target.faceDir), target.z + 5, cParTypeZap);
     target.customFrameIndex = 0.05;

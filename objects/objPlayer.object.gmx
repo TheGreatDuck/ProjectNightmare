@@ -110,9 +110,9 @@ if (onGround)
         player_die(0, deadSnd);
         with (instance_create(objCamera.x, objCamera.y, objCutscene))
         {
-            direction = objCamera.faceDir;
-            pitch = objCamera.pitch;
-            z = objCamera.z;
+            direction = global.cD;
+            pitch = global.cP;
+            z = global.cZ;
             cutscene_create();
             var xx = other.x + lengthdir_x(32, other.faceDir), yy = other.y + lengthdir_y(32, other.faceDir);
             cutscene_camera(xx, yy, other.z, point_direction(xx, yy, other.x, other.y), 0, 30, 0);
@@ -132,42 +132,52 @@ if (keyboard_check_pressed(ord("R")))
     y = ystart;
     z = 300;
 }
-var keyX = global.bind[0, 5] - global.bind[2, 6], keyY = global.bind[3, 5] - global.bind[1, 6];
+var keyX = global.bind[0, 5] - global.bind[2, 6], keyY = global.bind[3, 5] - global.bind[1, 6], keyVec = point_distance(0, 0, keyX, keyY);
 spd = point_distance(0, 0, hSpeed, vSpeed);
-if ((abs(keyX) || abs(keyY)) &amp;&amp; !sliding)
+if (keyVec &gt; 0.1 &amp;&amp; !sliding)
 {
     var gotoDir = point_direction(0, 0, keyX, keyY);
-    if (onGround &amp;&amp; abs(angle_difference(targetDir, gotoDir)) == 180)
-        if (abs(spd) &gt;= 0.06)
+    if (onGround)
+    {
+        if (abs(angle_difference(targetDir, gotoDir)) &gt;= 170)
         {
-            spd *= 0.89;
-            anim = cAniMarioSkid;
-            frame = 0;
-            particle_create(x, y, bottom, cParTypeSkid);
-            d3d_sound_play(cSndSkid, false, 1);
-            faceRoll = lerp_angle(faceRoll, 0, 0.075);
+            if (abs(spd) &gt;= 0.06)
+            {
+                spd *= 0.89;
+                anim = cAniMarioSkid;
+                frame = 0;
+                particle_create(x, y, bottom, cParTypeSkid);
+                d3d_sound_play(cSndSkid, false, 1);
+                faceRoll = lerp_angle(faceRoll, 0, 0.075);
+            }
+            else
+            {
+                if (anim = cAniMarioSkid) anim = cAniMarioSkid2;
+                targetDir = gotoDir;
+                moveDir = gotoDir;
+            }
         }
         else
         {
+            var moveDirInc = turn_to_angle(global.cD + targetDir, 10, moveDir);
+            spd = min(spd + 0.1, lengthdir_x(2.5, floorPitch) - 0.5 * (keyVec &gt;= 0.25 &amp;&amp; keyVec &lt;= 0.75));
             targetDir = gotoDir;
-            moveDir = targetDir;
+            moveDir += moveDirInc;
+            faceRoll = lerp_angle(faceRoll, 1.5 * -moveDirInc, 0.1);
         }
+    }
     else
     {
-        var moveModifier = 1 - 0.5 * !onGround, maxSpeed = 2.5;
-        if (onGround) maxSpeed = lengthdir_x(2.5, floorPitch);
-        maxSpeed *= 1 - 0.5 * keyboard_check(vk_shift);
-        spd = min(spd + 0.1 * moveModifier, maxSpeed);
-        targetDir = gotoDir;
-        moveDir += turn_to_angle(global.cD + targetDir, 10 * moveModifier, moveDir);
-        faceRoll = lerp_angle(faceRoll, angle_difference(targetDir, gotoDir), 0.1);
+        var tiltDir = global.cD + gotoDir, tiltVec = keyVec * 0.06;
+        hSpeed = clamp(hSpeed + lengthdir_x(tiltVec, tiltDir), -2.5, 2.5);
+        vSpeed = clamp(vSpeed + lengthdir_y(tiltVec, tiltDir), -2.5, 2.5);
+        targetDir = faceDir;
+        moveDir = tiltDir;
     }
 }
-else if (abs(spd) &gt;= 0.01)
+else if (onGround) if (abs(spd) &gt;= 0.01)
 {
-    var stopModifier = 0.9;
-    if !(onGround) stopModifier = 0.95;
-    spd *= stopModifier;
+    spd *= 0.9;
     faceRoll = lerp_angle(faceRoll, 0, 0.1);
 }
 else
@@ -175,11 +185,18 @@ else
     spd = 0;
     faceRoll = 0;
 }
-var lookTo = moveDir;
-//if (holding &amp;&amp; holding.holdableType) lookTo = global.cD;
-faceDir += turn_to_angle(lookTo, 10, faceDir);
-hSpeed = lengthdir_x(spd, moveDir);
-vSpeed = lengthdir_y(spd, moveDir);
+else
+{
+    hSpeed *= 0.99;
+    vSpeed *= 0.99;
+    spd = point_distance(0, 0, hSpeed, vSpeed);
+}
+if (onGround)
+{
+    faceDir += turn_to_angle(moveDir, 10, faceDir);
+    hSpeed = lengthdir_x(spd, moveDir);
+    vSpeed = lengthdir_y(spd, moveDir);
+}
 //jump when on the ground
 if (onGround &amp;&amp; !sliding &amp;&amp; floorPitch &lt; 60 &amp;&amp; global.bind[4, 3])
 {
@@ -187,16 +204,14 @@ if (onGround &amp;&amp; !sliding &amp;&amp; floorPitch &lt; 60 &amp;&amp; global
     d3d_sound_play(cSndJump, false, 1);
     if !(c_raycast_world(x, y, z, x, y, top + jumpSpd, 1)) z += jumpSpd;
     zSpeed = jumpSpd - 0.1;
-    if (object_index == objMario)
-    {
-        anim = cAniMarioJump;
-        frame = 0;
-    }
+    anim = cAniMarioJump + (angle_difference(faceDir, global.cD) &lt; 0);
+    frame = 0;
 }
 //Get nearest enemy
 var near = instance_nearest(x, y, objEnemy);
 //If nearest enemy is within the range of the player, crank up that battle music.
-if (near) global.battle = point_distance_3d(x, y, z, near.x, near.y, near.z) &lt; 100; else global.battle = false;
+if (near) global.battle = point_distance_3d(x, y, z, near.x, near.y, near.z) &lt; 100;
+else global.battle = false;
 //Holding mechanic
 if (global.bind[6, 3])
     if (holding) player_drop_holdable(hSpeed + lengthdir_x(1.5, faceDir), vSpeed + lengthdir_y(1.5, faceDir), zSpeed + 1.5);
@@ -299,7 +314,7 @@ if (!timer[1] &amp;&amp; hp)
 {
     objCamera.flinch = irandom_range(-20, 20);
     player_sound_play(hurtSnd);
-    hp--;
+    hp -= 2;
     timer[1] = 120;
 }
 </string>
