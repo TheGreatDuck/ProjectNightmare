@@ -2,9 +2,12 @@
 #include <string.h>
 #include <queue>
 #include <pthread.h>
+#include <mutex>
 #include "delayed_function_calls.hpp"
 #include "gameLoop.hpp"
 #include "getGameLoop.hpp"
+#include "variableWrapper.hpp"
+#include "variableWrapperDeclaration.hpp"
 
 typedef struct
 {
@@ -22,9 +25,11 @@ typedef struct delayedFunctionCall
 } delayedFunctionCall;
 
 std::queue<delayedFunctionCall> functionQueue;
+std::mutex functionQueueMutex;
 
 GMEXPORT double removeDelayedFunctionCall()
 {
+    functionQueueMutex.lock();
     if (!functionQueue.empty())
     {
         delayedFunctionCall temp = functionQueue.front();
@@ -35,43 +40,64 @@ GMEXPORT double removeDelayedFunctionCall()
                 free(temp.input[i].text);
         }
     }
+    functionQueueMutex.unlock();
     return 1.0;
 }
 
 GMEXPORT char* getInputText(double input)
 {
-    return functionQueue.front().input[(int)input].text;
+    functionQueueMutex.lock();
+    char* returnValue = functionQueue.front().input[(int)input].text;
+    functionQueueMutex.unlock();
+    return returnValue;
 }
 
 GMEXPORT double getInputNumber(double input)
 {
-    return functionQueue.front().input[(int)input].number;
+    functionQueueMutex.lock();
+    double returnValue = functionQueue.front().input[(int)input].number;
+    functionQueueMutex.unlock();
+    return returnValue;
 }
 
 GMEXPORT double getInputType(double input)
 {
-    return functionQueue.front().input[(int)input].type;
+    functionQueueMutex.lock();
+    double returnValue = functionQueue.front().input[(int)input].type;
+    functionQueueMutex.unlock();
+    return returnValue;
 }
 
 GMEXPORT double getFunction()
 {
-    return functionQueue.front().function;
+    functionQueueMutex.lock();
+    double returnValue = functionQueue.front().function;
+    functionQueueMutex.unlock();
+    return returnValue;
 }
 
 GMEXPORT double setDelayedOutput(double value)
 {
+    functionQueueMutex.lock();
     *(functionQueue.front().delayedOutput) = value;
+    functionQueueMutex.unlock();
     return value;
 }
 
 GMEXPORT double getHasOutput()
 {
-    return functionQueue.front().hasOutput;
+    functionQueueMutex.lock();
+    double returnValue = functionQueue.front().hasOutput;
+    functionQueueMutex.unlock();
+    return returnValue;
 }
 
 GMEXPORT double isThereDelayedFunctionCall()
 {
-    return !functionQueue.empty();
+    functionQueueMutex.lock();
+    double returnValue = !functionQueue.empty();
+    functionQueueMutex.unlock();
+    return returnValue;
 }
 
 static delayedInput convertToDelayedInput(double input)
@@ -111,14 +137,14 @@ static double addDelayedFunctionCall(int function, int hasOutput)
     call.function      = function;
     call.delayedOutput = &delayedOutput;
     call.hasOutput     = hasOutput;
+    functionQueueMutex.lock();
     functionQueue.push(call);
+    functionQueueMutex.unlock();
 
     if (call.hasOutput)
     {
         while (isThereDelayedFunctionCall() && !is_dll_function_call_complete())
-        {
-
-        }
+            ;
     }
 
     return delayedOutput;
@@ -134,14 +160,14 @@ template <typename... Input> double addDelayedFunctionCall(int function, int has
     call.hasOutput     = hasOutput;
 
     addDelayedFunctionCall_helper(0, &call, input...);
+    functionQueueMutex.lock();
     functionQueue.push(call);
+    functionQueueMutex.unlock();
 
     if (call.hasOutput)
     {
-        while (isThereDelayedFunctionCall() && !is_dll_function_call_complete())
-        {
-
-        }
+        while ((int)isThereDelayedFunctionCall() && !(int)is_dll_function_call_complete())
+            ;
     }
 
     return delayedOutput;
@@ -158,10 +184,10 @@ GMEXPORT double export_##name(double functionPointer)\
 
 #include "gameMakerLibrary.hpp"
 #include "gameMakerGenLibrary.hpp"
+#include "variableWrapperCallback.hpp"
 
-typedef double (*dll_called_function)();
-
-volatile dll_called_function function_to_call;
+std::mutex functionCallMutex;
+volatile void* function_to_call;
 volatile delayedInput dll_input[14];
 volatile int function_returned;
 volatile double function_return_value;
@@ -170,33 +196,41 @@ void *dll_function_call_loop(void *vargp)
 {
     while (1)
     {
+        functionCallMutex.lock();
         if (function_returned == 0)
         {
             #include "callGameLoop.hpp"
             function_returned = 1;
             function_to_call = NULL;
         }
+        functionCallMutex.unlock();
     }
     return NULL;
 }
 
 GMEXPORT double prime_argument_real(double index, double value)
 {
+    functionCallMutex.lock();
     dll_input[(int)index].number = value;
+    functionCallMutex.unlock();
     return 0;
 }
 
 GMEXPORT double prime_argument_string(double index, char* value)
 {
+    functionCallMutex.lock();
     dll_input[(int)index].text = (char*) malloc((strlen(value) + 1)*sizeof(char));
     strcpy(dll_input[(int)index].text, value);
+    functionCallMutex.unlock();
     return 0;
 }
 
 GMEXPORT double call_dll_function(double function_pointer)
 {
-    function_to_call = (dll_called_function)(int)function_pointer;
+    functionCallMutex.lock();
+    function_to_call = (void*)(int)function_pointer;
     function_returned = 0;
+    functionCallMutex.unlock();
     return 0;
 }
 
@@ -212,6 +246,8 @@ GMEXPORT double get_dll_function_call_return_value()
 
 GMEXPORT double init_dll_function_call_loop()
 {
+    #include "initVariableWrapper.hpp"
+
     function_returned = 1;
     function_to_call = NULL;
 
