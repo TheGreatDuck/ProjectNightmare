@@ -33,15 +33,19 @@
 					<Add option="-Wextra" />
 					<Add option="-Wall" />
 					<Add option="-pg" />
+					<Add option="-m32" />
 					<Add option="-std=c++0x" />
 				</Compiler>
 				<Linker>
 					<Add option="-pg -lgmon" />
+					<Add option="-static-libstdc++" />
+					<Add option="-static-libgcc" />
+					<Add option="-static" />
+					<Add option="-m32" />
 					<Add option="-lpthread" />
 					<Add library="user32" />
 				</Linker>
 				<ExtraCommands>
-					<Add before='cmd /c copy &quot;..\ProjectNightmare.project.gmx&quot;' />
 					<Add before="WrapperGenerator.exe" />
 				</ExtraCommands>
 			</Target>
@@ -71,10 +75,15 @@
 					<Add option="-Wextra" />
 					<Add option="-Wall" />
 					<Add option="-pg" />
+					<Add option="-m32" />
 					<Add option="-std=c++0x" />
 				</Compiler>
 				<Linker>
 					<Add option="-pg -lgmon" />
+					<Add option="-static-libstdc++" />
+					<Add option="-static-libgcc" />
+					<Add option="-static" />
+					<Add option="-m32" />
 					<Add option="-lpthread" />
 					<Add library="user32" />
 				</Linker>
@@ -86,9 +95,8 @@
 		<Unit filename="delayed_function_calls.hpp">
 			<Option target="Release" />
 		</Unit>
-		<Unit filename="dynamicWrapperGeneration.cpp" />
-		<Unit filename="gameLoop.cpp">
-			<Option target="Release" />
+		<Unit filename="dynamicWrapperGeneration.cpp">
+			<Option target="Wrapper Generator" />
 		</Unit>
 		<Unit filename="gameLoop.hpp">
 			<Option target="Release" />
@@ -105,7 +113,22 @@
 		<Unit filename="gameMakerFunctions/3DGraphics/d3d_transform.hpp">
 			<Option target="Release" />
 		</Unit>
+		<Unit filename="gameMakerFunctions/builtInVariables.hpp">
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="gameMakerFunctions/customFunctions.hpp">
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="gameMakerFunctions/gameGraphics/drawingShapes.hpp">
+			<Option target="Release" />
+		</Unit>
 		<Unit filename="gameMakerFunctions/gameGraphics/fontsAndText.hpp">
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="gameMakerFunctions/gameGraphics/theDisplay.hpp">
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="gameMakerFunctions/gameGraphics/theWindow.hpp">
 			<Option target="Release" />
 		</Unit>
 		<Unit filename="gameMakerFunctions/gamePlay/rooms.hpp">
@@ -121,6 +144,21 @@
 			<Option target="Release" />
 		</Unit>
 		<Unit filename="gameMakerLibrary.hpp">
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="link.cpp">
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="link.hpp">
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="nes_wall.cpp">
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="nes_wall.hpp">
+			<Option target="Release" />
+		</Unit>
+		<Unit filename="variableWrapper.hpp">
 			<Option target="Release" />
 		</Unit>
 		<Extensions>

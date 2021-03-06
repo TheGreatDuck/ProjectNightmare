@@ -63,7 +63,7 @@ actor_create();
                 player_drop_holdable(0, 0, 0);
                 instance_destroy();
             }
-            nes_add_player(pointer, other.id);
+            nes_add_link(pointer, other.id);
             global.currentNESWall = id;
         }
     }

@@ -309,7 +309,6 @@
     <scripts name="GML Calling DLL Interface">
       <scripts name="Internal">
         <script>scripts\scr_delayCallDLL_getInput.gml</script>
-        <script>scripts\scr_delayCallDLL_exportWrapperFunctions.gml</script>
         <script>scripts\scr_delayCallDLL_callQueuedFunctions.gml</script>
         <script>scripts\scr_delayCallDLL_removeDelayedFunctionCall.gml</script>
         <script>scripts\scr_delayCallDLL_getInputDelayedVariable.gml</script>
@@ -321,71 +320,6 @@
         <script>scripts\scr_delayCallDLL_getHasOutput.gml</script>
         <script>scripts\scr_delayCallDLL_isThereDelayedFunctionCall.gml</script>
       </scripts>
-      <scripts name="Wrapper Functions">
-        <script>scripts\scr_wrapper_d3d_model_create.gml</script>
-        <script>scripts\scr_wrapper_d3d_model_destroy.gml</script>
-        <script>scripts\scr_wrapper_d3d_model_load.gml</script>
-        <script>scripts\scr_wrapper_d3d_model_draw.gml</script>
-        <script>scripts\scr_wrapper_d3d_model_primitive_begin.gml</script>
-        <script>scripts\scr_wrapper_d3d_model_vertex_texture.gml</script>
-        <script>scripts\scr_wrapper_d3d_model_primitive_end.gml</script>
-        <script>scripts\scr_wrapper_d3d_primitive_begin.gml</script>
-        <script>scripts\scr_wrapper_d3d_vertex.gml</script>
-        <script>scripts\scr_wrapper_d3d_vertex_color.gml</script>
-        <script>scripts\scr_wrapper_d3d_primitive_end.gml</script>
-        <script>scripts\scr_wrapper_d3d_primitive_begin_texture.gml</script>
-        <script>scripts\scr_wrapper_d3d_vertex_texture.gml</script>
-        <script>scripts\scr_wrapper_d3d_vertex_texture_color.gml</script>
-        <script>scripts\scr_wrapper_d3d_vertex_normal_color.gml</script>
-        <script>scripts\scr_wrapper_d3d_vertex_normal_texture.gml</script>
-        <script>scripts\scr_wrapper_d3d_vertex_normal_texture_color.gml</script>
-        <script>scripts\scr_wrapper_d3d_draw_block.gml</script>
-        <script>scripts\scr_wrapper_d3d_draw_cylinder.gml</script>
-        <script>scripts\scr_wrapper_d3d_draw_cone.gml</script>
-        <script>scripts\scr_wrapper_d3d_draw_ellipsoid.gml</script>
-        <script>scripts\scr_wrapper_d3d_draw_wall.gml</script>
-        <script>scripts\scr_wrapper_d3d_draw_floor.gml</script>
-        <script>scripts\scr_wrapper_d3d_set_projection_ortho.gml</script>
-        <script>scripts\scr_wrapper_d3d_set_projection_perspective.gml</script>
-        <script>scripts\scr_wrapper_d3d_set_projection.gml</script>
-        <script>scripts\scr_wrapper_d3d_start.gml</script>
-        <script>scripts\scr_wrapper_d3d_set_fog.gml</script>
-        <script>scripts\scr_wrapper_d3d_set_lighting.gml</script>
-        <script>scripts\scr_wrapper_d3d_transform_set_identity.gml</script>
-        <script>scripts\scr_wrapper_d3d_transform_set_translation.gml</script>
-        <script>scripts\scr_wrapper_d3d_transform_set_scaling.gml</script>
-        <script>scripts\scr_wrapper_d3d_transform_set_rotation_x.gml</script>
-        <script>scripts\scr_wrapper_d3d_transform_set_rotation_y.gml</script>
-        <script>scripts\scr_wrapper_d3d_transform_set_rotation_z.gml</script>
-        <script>scripts\scr_wrapper_d3d_transform_set_rotation_axis.gml</script>
-        <script>scripts\scr_wrapper_d3d_transform_add_translation.gml</script>
-        <script>scripts\scr_wrapper_d3d_transform_add_scaling.gml</script>
-        <script>scripts\scr_wrapper_d3d_transform_add_rotation_x.gml</script>
-        <script>scripts\scr_wrapper_d3d_transform_add_rotation_y.gml</script>
-        <script>scripts\scr_wrapper_d3d_transform_add_rotation_z.gml</script>
-        <script>scripts\scr_wrapper_d3d_transform_add_rotation_axis.gml</script>
-        <script>scripts\scr_wrapper_draw_text.gml</script>
-        <script>scripts\scr_wrapper_mouse_check_button.gml</script>
-        <script>scripts\scr_wrapper_mouse_check_button_pressed.gml</script>
-        <script>scripts\scr_wrapper_mouse_check_button_released.gml</script>
-        <script>scripts\scr_wrapper_mouse_wheel_up.gml</script>
-        <script>scripts\scr_wrapper_mouse_wheel_down.gml</script>
-        <script>scripts\scr_wrapper_keyboard_check.gml</script>
-        <script>scripts\scr_wrapper_joystick_exists.gml</script>
-        <script>scripts\scr_wrapper_joystick_axes.gml</script>
-        <script>scripts\scr_wrapper_joystick_buttons.gml</script>
-        <script>scripts\scr_wrapper_joystick_has_pov.gml</script>
-        <script>scripts\scr_wrapper_joystick_direction.gml</script>
-        <script>scripts\scr_wrapper_joystick_check_button.gml</script>
-        <script>scripts\scr_wrapper_joystick_xpos.gml</script>
-        <script>scripts\scr_wrapper_joystick_ypos.gml</script>
-        <script>scripts\scr_wrapper_joystick_zpos.gml</script>
-        <script>scripts\scr_wrapper_joystick_rpos.gml</script>
-        <script>scripts\scr_wrapper_joystick_upos.gml</script>
-        <script>scripts\scr_wrapper_joystick_vpos.gml</script>
-        <script>scripts\scr_wrapper_joystick_pov.gml</script>
-        <script>scripts\scr_wrapper_game_end.gml</script>
-      </scripts>
       <script>scripts\scr_initDelayedCallingDLL.gml</script>
       <script>scripts\scr_get_DLL_function.gml</script>
       <script>scripts\scr_call_DLL_function.gml</script>
@@ -394,8 +328,8 @@
       <script>scripts\nes_create.gml</script>
       <script>scripts\nes_update.gml</script>
       <script>scripts\nes_add_pipe.gml</script>
-      <script>scripts\nes_add_player.gml</script>
-      <script>scripts\nes_remove_player.gml</script>
+      <script>scripts\nes_add_link.gml</script>
+      <script>scripts\link_leave_wall.gml</script>
       <script>scripts\nes_draw.gml</script>
       <script>scripts\nes_destroy.gml</script>
     </scripts>
