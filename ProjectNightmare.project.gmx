@@ -56,40 +56,6 @@
       <filename>CallDelayedFunctions.dll</filename>
     </datafile>
     <datafile>
-      <name>tex_2DLink_strip12.png</name>
-      <exists>-1</exists>
-      <size>923</size>
-      <exportAction>2</exportAction>
-      <exportDir></exportDir>
-      <overwrite>0</overwrite>
-      <freeData>-1</freeData>
-      <removeEnd>0</removeEnd>
-      <store>0</store>
-      <ConfigOptions>
-        <Config name="Default">
-          <CopyToMask>9223372036854775807</CopyToMask>
-        </Config>
-      </ConfigOptions>
-      <filename>tex_2DLink_strip12.png</filename>
-    </datafile>
-    <datafile>
-      <name>tex_SMB_pipe_strip4.png</name>
-      <exists>-1</exists>
-      <size>527</size>
-      <exportAction>2</exportAction>
-      <exportDir></exportDir>
-      <overwrite>0</overwrite>
-      <freeData>-1</freeData>
-      <removeEnd>0</removeEnd>
-      <store>0</store>
-      <ConfigOptions>
-        <Config name="Default">
-          <CopyToMask>9223372036854775807</CopyToMask>
-        </Config>
-      </ConfigOptions>
-      <filename>tex_SMB_pipe_strip4.png</filename>
-    </datafile>
-    <datafile>
       <name>discord-rpc.dll</name>
       <exists>-1</exists>
       <size>307720</size>
