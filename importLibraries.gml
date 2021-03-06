@@ -183,60 +183,6 @@ global.delayCallDLL_export_screen_save = external_define("CallDelayedFunctions.d
 external_call(global.delayCallDLL_export_screen_save, scr_wrapper_screen_save);
 global.delayCallDLL_export_screen_save_part = external_define("CallDelayedFunctions.dll", "export_screen_save_part", dll_cdecl, ty_real, 1, ty_real);
 external_call(global.delayCallDLL_export_screen_save_part, scr_wrapper_screen_save_part);
-global.delayCallDLL_export_window_set_visible = external_define("CallDelayedFunctions.dll", "export_window_set_visible", dll_cdecl, ty_real, 1, ty_real);
-external_call(global.delayCallDLL_export_window_set_visible, scr_wrapper_window_set_visible);
-global.delayCallDLL_export_window_get_visible = external_define("CallDelayedFunctions.dll", "export_window_get_visible", dll_cdecl, ty_real, 1, ty_real);
-external_call(global.delayCallDLL_export_window_get_visible, scr_wrapper_window_get_visible);
-global.delayCallDLL_export_window_set_fullscreen = external_define("CallDelayedFunctions.dll", "export_window_set_fullscreen", dll_cdecl, ty_real, 1, ty_real);
-external_call(global.delayCallDLL_export_window_set_fullscreen, scr_wrapper_window_set_fullscreen);
-global.delayCallDLL_export_window_get_fullscreen = external_define("CallDelayedFunctions.dll", "export_window_get_fullscreen", dll_cdecl, ty_real, 1, ty_real);
-external_call(global.delayCallDLL_export_window_get_fullscreen, scr_wrapper_window_get_fullscreen);
-global.delayCallDLL_export_window_set_showborder = external_define("CallDelayedFunctions.dll", "export_window_set_showborder", dll_cdecl, ty_real, 1, ty_real);
-external_call(global.delayCallDLL_export_window_set_showborder, scr_wrapper_window_set_showborder);
-global.delayCallDLL_export_window_get_showborder = external_define("CallDelayedFunctions.dll", "export_window_get_showborder", dll_cdecl, ty_real, 1, ty_real);
-external_call(global.delayCallDLL_export_window_get_showborder, scr_wrapper_window_get_showborder);
-global.delayCallDLL_export_window_set_showicons = external_define("CallDelayedFunctions.dll", "export_window_set_showicons", dll_cdecl, ty_real, 1, ty_real);
-external_call(global.delayCallDLL_export_window_set_showicons, scr_wrapper_window_set_showicons);
-global.delayCallDLL_export_window_get_showicons = external_define("CallDelayedFunctions.dll", "export_window_get_showicons", dll_cdecl, ty_real, 1, ty_real);
-external_call(global.delayCallDLL_export_window_get_showicons, scr_wrapper_window_get_showicons);
-global.delayCallDLL_export_window_set_stayontop = external_define("CallDelayedFunctions.dll", "export_window_set_stayontop", dll_cdecl, ty_real, 1, ty_real);
-external_call(global.delayCallDLL_export_window_set_stayontop, scr_wrapper_window_set_stayontop);
-global.delayCallDLL_export_window_get_stayontop = external_define("CallDelayedFunctions.dll", "export_window_get_stayontop", dll_cdecl, ty_real, 1, ty_real);
-external_call(global.delayCallDLL_export_window_get_stayontop, scr_wrapper_window_get_stayontop);
-global.delayCallDLL_export_window_set_sizeable = external_define("CallDelayedFunctions.dll", "export_window_set_sizeable", dll_cdecl, ty_real, 1, ty_real);
-external_call(global.delayCallDLL_export_window_set_sizeable, scr_wrapper_window_set_sizeable);
-global.delayCallDLL_export_window_get_sizeable = external_define("CallDelayedFunctions.dll", "export_window_get_sizeable", dll_cdecl, ty_real, 1, ty_real);
-external_call(global.delayCallDLL_export_window_get_sizeable, scr_wrapper_window_get_sizeable);
-global.delayCallDLL_export_window_get_width = external_define("CallDelayedFunctions.dll", "export_window_get_width", dll_cdecl, ty_real, 1, ty_real);
-external_call(global.delayCallDLL_export_window_get_width, scr_wrapper_window_get_width);
-global.delayCallDLL_export_window_get_height = external_define("CallDelayedFunctions.dll", "export_window_get_height", dll_cdecl, ty_real, 1, ty_real);
-external_call(global.delayCallDLL_export_window_get_height, scr_wrapper_window_get_height);
-global.delayCallDLL_export_display_get_width = external_define("CallDelayedFunctions.dll", "export_display_get_width", dll_cdecl, ty_real, 1, ty_real);
-external_call(global.delayCallDLL_export_display_get_width, scr_wrapper_display_get_width);
-global.delayCallDLL_export_display_get_height = external_define("CallDelayedFunctions.dll", "export_display_get_height", dll_cdecl, ty_real, 1, ty_real);
-external_call(global.delayCallDLL_export_display_get_height, scr_wrapper_display_get_height);
-global.delayCallDLL_export_display_get_colordepth = external_define("CallDelayedFunctions.dll", "export_display_get_colordepth", dll_cdecl, ty_real, 1, ty_real);
-external_call(global.delayCallDLL_export_display_get_colordepth, scr_wrapper_display_get_colordepth);
-global.delayCallDLL_export_display_get_frequency = external_define("CallDelayedFunctions.dll", "export_display_get_frequency", dll_cdecl, ty_real, 1, ty_real);
-external_call(global.delayCallDLL_export_display_get_frequency, scr_wrapper_display_get_frequency);
-global.delayCallDLL_export_display_set_size = external_define("CallDelayedFunctions.dll", "export_display_set_size", dll_cdecl, ty_real, 1, ty_real);
-external_call(global.delayCallDLL_export_display_set_size, scr_wrapper_display_set_size);
-global.delayCallDLL_export_display_set_colordepth = external_define("CallDelayedFunctions.dll", "export_display_set_colordepth", dll_cdecl, ty_real, 1, ty_real);
-external_call(global.delayCallDLL_export_display_set_colordepth, scr_wrapper_display_set_colordepth);
-global.delayCallDLL_export_display_set_frequency = external_define("CallDelayedFunctions.dll", "export_display_set_frequency", dll_cdecl, ty_real, 1, ty_real);
-external_call(global.delayCallDLL_export_display_set_frequency, scr_wrapper_display_set_frequency);
-global.delayCallDLL_export_display_set_all = external_define("CallDelayedFunctions.dll", "export_display_set_all", dll_cdecl, ty_real, 1, ty_real);
-external_call(global.delayCallDLL_export_display_set_all, scr_wrapper_display_set_all);
-global.delayCallDLL_export_display_test_all = external_define("CallDelayedFunctions.dll", "export_display_test_all", dll_cdecl, ty_real, 1, ty_real);
-external_call(global.delayCallDLL_export_display_test_all, scr_wrapper_display_test_all);
-global.delayCallDLL_export_display_reset = external_define("CallDelayedFunctions.dll", "export_display_reset", dll_cdecl, ty_real, 1, ty_real);
-external_call(global.delayCallDLL_export_display_reset, scr_wrapper_display_reset);
-global.delayCallDLL_export_display_mouse_get_x = external_define("CallDelayedFunctions.dll", "export_display_mouse_get_x", dll_cdecl, ty_real, 1, ty_real);
-external_call(global.delayCallDLL_export_display_mouse_get_x, scr_wrapper_display_mouse_get_x);
-global.delayCallDLL_export_display_mouse_get_y = external_define("CallDelayedFunctions.dll", "export_display_mouse_get_y", dll_cdecl, ty_real, 1, ty_real);
-external_call(global.delayCallDLL_export_display_mouse_get_y, scr_wrapper_display_mouse_get_y);
-global.delayCallDLL_export_display_mouse_set = external_define("CallDelayedFunctions.dll", "export_display_mouse_set", dll_cdecl, ty_real, 1, ty_real);
-external_call(global.delayCallDLL_export_display_mouse_set, scr_wrapper_display_mouse_set);
 global.delayCallDLL_export_mouse_check_button = external_define("CallDelayedFunctions.dll", "export_mouse_check_button", dll_cdecl, ty_real, 1, ty_real);
 external_call(global.delayCallDLL_export_mouse_check_button, scr_wrapper_mouse_check_button);
 global.delayCallDLL_export_mouse_check_button_pressed = external_define("CallDelayedFunctions.dll", "export_mouse_check_button_pressed", dll_cdecl, ty_real, 1, ty_real);
@@ -379,6 +325,14 @@ global.delayCallDLL_export_get_pr_trianglefan = external_define("CallDelayedFunc
 external_call(global.delayCallDLL_export_get_pr_trianglefan, scr_wrapper_get_pr_trianglefan);
 global.delayCallDLL_export_set_pr_trianglefan = external_define("CallDelayedFunctions.dll", "export_set_pr_trianglefan", dll_cdecl, ty_real, 1, ty_real);
 external_call(global.delayCallDLL_export_set_pr_trianglefan, scr_wrapper_set_pr_trianglefan);
+global.delayCallDLL_export_get_tex_2DLink = external_define("CallDelayedFunctions.dll", "export_get_tex_2DLink", dll_cdecl, ty_real, 1, ty_real);
+external_call(global.delayCallDLL_export_get_tex_2DLink, scr_wrapper_get_tex_2DLink);
+global.delayCallDLL_export_set_tex_2DLink = external_define("CallDelayedFunctions.dll", "export_set_tex_2DLink", dll_cdecl, ty_real, 1, ty_real);
+external_call(global.delayCallDLL_export_set_tex_2DLink, scr_wrapper_set_tex_2DLink);
+global.delayCallDLL_export_get_tex_SMB_pipe = external_define("CallDelayedFunctions.dll", "export_get_tex_SMB_pipe", dll_cdecl, ty_real, 1, ty_real);
+external_call(global.delayCallDLL_export_get_tex_SMB_pipe, scr_wrapper_get_tex_SMB_pipe);
+global.delayCallDLL_export_set_tex_SMB_pipe = external_define("CallDelayedFunctions.dll", "export_set_tex_SMB_pipe", dll_cdecl, ty_real, 1, ty_real);
+external_call(global.delayCallDLL_export_set_tex_SMB_pipe, scr_wrapper_set_tex_SMB_pipe);
 
 #define scr_wrapper_d3d_model_create
 return d3d_model_create();
@@ -656,87 +610,6 @@ screen_save(argument[0]);
 #define scr_wrapper_screen_save_part
 screen_save_part(argument[0],argument[1],argument[2],argument[3],argument[4]);
 
-#define scr_wrapper_window_set_visible
-window_set_visible(argument[0]);
-
-#define scr_wrapper_window_get_visible
-return window_get_visible();
-
-#define scr_wrapper_window_set_fullscreen
-window_set_fullscreen(argument[0]);
-
-#define scr_wrapper_window_get_fullscreen
-return window_get_fullscreen();
-
-#define scr_wrapper_window_set_showborder
-window_set_showborder(argument[0]);
-
-#define scr_wrapper_window_get_showborder
-return window_get_showborder();
-
-#define scr_wrapper_window_set_showicons
-window_set_showicons(argument[0]);
-
-#define scr_wrapper_window_get_showicons
-return window_get_showicons();
-
-#define scr_wrapper_window_set_stayontop
-window_set_stayontop(argument[0]);
-
-#define scr_wrapper_window_get_stayontop
-return window_get_stayontop();
-
-#define scr_wrapper_window_set_sizeable
-window_set_sizeable(argument[0]);
-
-#define scr_wrapper_window_get_sizeable
-return window_get_sizeable();
-
-#define scr_wrapper_window_get_width
-return window_get_width();
-
-#define scr_wrapper_window_get_height
-return window_get_height();
-
-#define scr_wrapper_display_get_width
-return display_get_width();
-
-#define scr_wrapper_display_get_height
-return display_get_height();
-
-#define scr_wrapper_display_get_colordepth
-return display_get_colordepth();
-
-#define scr_wrapper_display_get_frequency
-return display_get_frequency();
-
-#define scr_wrapper_display_set_size
-display_set_size(argument[0],argument[1]);
-
-#define scr_wrapper_display_set_colordepth
-display_set_colordepth(argument[0]);
-
-#define scr_wrapper_display_set_frequency
-display_set_frequency(argument[0]);
-
-#define scr_wrapper_display_set_all
-display_set_all(argument[0],argument[1],argument[2],argument[3]);
-
-#define scr_wrapper_display_test_all
-return display_test_all(argument[0],argument[1],argument[2],argument[3]);
-
-#define scr_wrapper_display_reset
-display_reset();
-
-#define scr_wrapper_display_mouse_get_x
-return display_mouse_get_x();
-
-#define scr_wrapper_display_mouse_get_y
-return display_mouse_get_y();
-
-#define scr_wrapper_display_mouse_set
-display_mouse_set(argument[0],argument[1]);
-
 #define scr_wrapper_mouse_check_button
 return mouse_check_button(argument[0]);
 
@@ -949,4 +822,16 @@ return pr_trianglefan;
 
 #define scr_wrapper_set_pr_trianglefan
 //pr_trianglefan = argument[0];
+
+#define scr_wrapper_get_tex_2DLink
+return tex_2DLink;
+
+#define scr_wrapper_set_tex_2DLink
+//tex_2DLink = argument[0];
+
+#define scr_wrapper_get_tex_SMB_pipe
+return tex_SMB_pipe;
+
+#define scr_wrapper_set_tex_SMB_pipe
+//tex_SMB_pipe = argument[0];
 

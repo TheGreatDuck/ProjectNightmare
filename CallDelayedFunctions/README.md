@@ -10,6 +10,6 @@ In order to compile the Wrapper Generator and the DLL itself, you need CodeBlock
 
 **4.** Set the current project in CodeBlocks back to "Release", then build CallDelayedFunctions.
 
-**5.** In the directory above this one you will have a file called ImportScripts.gml. These are all of the generated Game Maker scripts to be imported. Simply delete the previous versions of the scripts and import this new version of the file to have the new sc ripts. This step can be skipped if no interfaces have changed between DLL and executable.
+**5.** In the directory above this one you will have a file called ImportScripts.gml. These are all of the generated Game Maker scripts to be imported. Simply delete the previous versions of the scripts and import this new version of the file to have the new scripts. This step can be skipped if no interfaces have changed between DLL and executable.
 
 After following these steps, you will have built a fresh new "CallDelayedFunctions.dll". Simply replace the current build in ProjectNightmare\datafiles with this one.

@@ -3,7 +3,7 @@
   <Configs name="configs">
     <Config>Configs\Default</Config>
   </Configs>
-  <datafiles number="123" name="datafiles">
+  <datafiles number="128" name="datafiles">
     <datafile>
       <name>discord_rich_presence.dll</name>
       <exists>-1</exists>
@@ -20,6 +20,40 @@
         </Config>
       </ConfigOptions>
       <filename>discord_rich_presence.dll</filename>
+    </datafile>
+    <datafile>
+      <name>pthreadGC2___.dll</name>
+      <exists>-1</exists>
+      <size>71886</size>
+      <exportAction>2</exportAction>
+      <exportDir></exportDir>
+      <overwrite>0</overwrite>
+      <freeData>-1</freeData>
+      <removeEnd>0</removeEnd>
+      <store>0</store>
+      <ConfigOptions>
+        <Config name="Default">
+          <CopyToMask>9223372036854775807</CopyToMask>
+        </Config>
+      </ConfigOptions>
+      <filename>pthreadGC2___.dll</filename>
+    </datafile>
+    <datafile>
+      <name>CallDelayedFunctions.dll</name>
+      <exists>-1</exists>
+      <size>677134</size>
+      <exportAction>2</exportAction>
+      <exportDir></exportDir>
+      <overwrite>0</overwrite>
+      <freeData>-1</freeData>
+      <removeEnd>0</removeEnd>
+      <store>0</store>
+      <ConfigOptions>
+        <Config name="Default">
+          <CopyToMask>9223372036854775807</CopyToMask>
+        </Config>
+      </ConfigOptions>
+      <filename>CallDelayedFunctions.dll</filename>
     </datafile>
     <datafile>
       <name>discord-rpc.dll</name>
@@ -80,6 +114,8 @@
   <sounds name="sound"/>
   <sprites name="sprites">
     <sprite>sprites\sprActor</sprite>
+    <sprite>sprites\tex_2DLink</sprite>
+    <sprite>sprites\tex_SMB_pipe</sprite>
   </sprites>
   <backgrounds name="background"/>
   <paths name="paths"/>
@@ -320,6 +356,176 @@
         <script>scripts\scr_delayCallDLL_getHasOutput.gml</script>
         <script>scripts\scr_delayCallDLL_isThereDelayedFunctionCall.gml</script>
       </scripts>
+      <scripts name="importLibraries">
+        <script>scripts\scr_delayCallDLL_exportWrapperFunctions.gml</script>
+        <script>scripts\scr_wrapper_d3d_model_create.gml</script>
+        <script>scripts\scr_wrapper_d3d_model_destroy.gml</script>
+        <script>scripts\scr_wrapper_d3d_model_load.gml</script>
+        <script>scripts\scr_wrapper_d3d_model_draw.gml</script>
+        <script>scripts\scr_wrapper_d3d_model_primitive_begin.gml</script>
+        <script>scripts\scr_wrapper_d3d_model_vertex_texture.gml</script>
+        <script>scripts\scr_wrapper_d3d_model_primitive_end.gml</script>
+        <script>scripts\scr_wrapper_d3d_primitive_begin.gml</script>
+        <script>scripts\scr_wrapper_d3d_vertex.gml</script>
+        <script>scripts\scr_wrapper_d3d_vertex_color.gml</script>
+        <script>scripts\scr_wrapper_d3d_primitive_end.gml</script>
+        <script>scripts\scr_wrapper_d3d_primitive_begin_texture.gml</script>
+        <script>scripts\scr_wrapper_d3d_vertex_texture.gml</script>
+        <script>scripts\scr_wrapper_d3d_vertex_texture_color.gml</script>
+        <script>scripts\scr_wrapper_d3d_vertex_normal_color.gml</script>
+        <script>scripts\scr_wrapper_d3d_vertex_normal_texture.gml</script>
+        <script>scripts\scr_wrapper_d3d_vertex_normal_texture_color.gml</script>
+        <script>scripts\scr_wrapper_d3d_draw_block.gml</script>
+        <script>scripts\scr_wrapper_d3d_draw_cylinder.gml</script>
+        <script>scripts\scr_wrapper_d3d_draw_cone.gml</script>
+        <script>scripts\scr_wrapper_d3d_draw_ellipsoid.gml</script>
+        <script>scripts\scr_wrapper_d3d_draw_wall.gml</script>
+        <script>scripts\scr_wrapper_d3d_draw_floor.gml</script>
+        <script>scripts\scr_wrapper_d3d_set_projection_ortho.gml</script>
+        <script>scripts\scr_wrapper_d3d_set_projection_perspective.gml</script>
+        <script>scripts\scr_wrapper_d3d_set_projection.gml</script>
+        <script>scripts\scr_wrapper_d3d_start.gml</script>
+        <script>scripts\scr_wrapper_d3d_set_fog.gml</script>
+        <script>scripts\scr_wrapper_d3d_set_lighting.gml</script>
+        <script>scripts\scr_wrapper_d3d_transform_set_identity.gml</script>
+        <script>scripts\scr_wrapper_d3d_transform_set_translation.gml</script>
+        <script>scripts\scr_wrapper_d3d_transform_set_scaling.gml</script>
+        <script>scripts\scr_wrapper_d3d_transform_set_rotation_x.gml</script>
+        <script>scripts\scr_wrapper_d3d_transform_set_rotation_y.gml</script>
+        <script>scripts\scr_wrapper_d3d_transform_set_rotation_z.gml</script>
+        <script>scripts\scr_wrapper_d3d_transform_set_rotation_axis.gml</script>
+        <script>scripts\scr_wrapper_d3d_transform_add_translation.gml</script>
+        <script>scripts\scr_wrapper_d3d_transform_add_scaling.gml</script>
+        <script>scripts\scr_wrapper_d3d_transform_add_rotation_x.gml</script>
+        <script>scripts\scr_wrapper_d3d_transform_add_rotation_y.gml</script>
+        <script>scripts\scr_wrapper_d3d_transform_add_rotation_z.gml</script>
+        <script>scripts\scr_wrapper_d3d_transform_add_rotation_axis.gml</script>
+        <script>scripts\scr_wrapper_draw_set_font.gml</script>
+        <script>scripts\scr_wrapper_draw_set_halign.gml</script>
+        <script>scripts\scr_wrapper_draw_set_valign.gml</script>
+        <script>scripts\scr_wrapper_draw_text.gml</script>
+        <script>scripts\scr_wrapper_draw_text_ext.gml</script>
+        <script>scripts\scr_wrapper_string_width.gml</script>
+        <script>scripts\scr_wrapper_string_height.gml</script>
+        <script>scripts\scr_wrapper_string_width_ext.gml</script>
+        <script>scripts\scr_wrapper_string_height_ext.gml</script>
+        <script>scripts\scr_wrapper_draw_text_transformed.gml</script>
+        <script>scripts\scr_wrapper_draw_text_ext_transformed.gml</script>
+        <script>scripts\scr_wrapper_draw_text_color.gml</script>
+        <script>scripts\scr_wrapper_draw_text_ext_color.gml</script>
+        <script>scripts\scr_wrapper_draw_text_transformed_color.gml</script>
+        <script>scripts\scr_wrapper_draw_text_ext_transformed_color.gml</script>
+        <script>scripts\scr_wrapper_sprite_get_texture.gml</script>
+        <script>scripts\scr_wrapper_sprite_add.gml</script>
+        <script>scripts\scr_wrapper_draw_sprite.gml</script>
+        <script>scripts\scr_wrapper_show_message.gml</script>
+        <script>scripts\scr_wrapper_draw_clear.gml</script>
+        <script>scripts\scr_wrapper_draw_clear_alpha.gml</script>
+        <script>scripts\scr_wrapper_draw_point.gml</script>
+        <script>scripts\scr_wrapper_draw_line.gml</script>
+        <script>scripts\scr_wrapper_draw_line_width.gml</script>
+        <script>scripts\scr_wrapper_draw_rectangle.gml</script>
+        <script>scripts\scr_wrapper_draw_roundrect.gml</script>
+        <script>scripts\scr_wrapper_draw_triangle.gml</script>
+        <script>scripts\scr_wrapper_draw_circle.gml</script>
+        <script>scripts\scr_wrapper_draw_ellipse.gml</script>
+        <script>scripts\scr_wrapper_draw_set_circle_precision.gml</script>
+        <script>scripts\scr_wrapper_draw_arrow.gml</script>
+        <script>scripts\scr_wrapper_draw_button.gml</script>
+        <script>scripts\scr_wrapper_draw_path.gml</script>
+        <script>scripts\scr_wrapper_draw_healthbar.gml</script>
+        <script>scripts\scr_wrapper_draw_set_color.gml</script>
+        <script>scripts\scr_wrapper_draw_set_alpha.gml</script>
+        <script>scripts\scr_wrapper_draw_get_color.gml</script>
+        <script>scripts\scr_wrapper_draw_get_alpha.gml</script>
+        <script>scripts\scr_wrapper_make_color_rgb.gml</script>
+        <script>scripts\scr_wrapper_make_color_hsv.gml</script>
+        <script>scripts\scr_wrapper_color_get_red.gml</script>
+        <script>scripts\scr_wrapper_color_get_green.gml</script>
+        <script>scripts\scr_wrapper_color_get_blue.gml</script>
+        <script>scripts\scr_wrapper_color_get_hue.gml</script>
+        <script>scripts\scr_wrapper_color_get_saturation.gml</script>
+        <script>scripts\scr_wrapper_color_get_value.gml</script>
+        <script>scripts\scr_wrapper_merge_color.gml</script>
+        <script>scripts\scr_wrapper_draw_getpixel.gml</script>
+        <script>scripts\scr_wrapper_screen_save.gml</script>
+        <script>scripts\scr_wrapper_screen_save_part.gml</script>
+        <script>scripts\scr_wrapper_mouse_check_button.gml</script>
+        <script>scripts\scr_wrapper_mouse_check_button_pressed.gml</script>
+        <script>scripts\scr_wrapper_mouse_check_button_released.gml</script>
+        <script>scripts\scr_wrapper_mouse_wheel_up.gml</script>
+        <script>scripts\scr_wrapper_mouse_wheel_down.gml</script>
+        <script>scripts\scr_wrapper_keyboard_check.gml</script>
+        <script>scripts\scr_wrapper_keyboard_check_pressed.gml</script>
+        <script>scripts\scr_wrapper_keyboard_check_released.gml</script>
+        <script>scripts\scr_wrapper_joystick_exists.gml</script>
+        <script>scripts\scr_wrapper_joystick_axes.gml</script>
+        <script>scripts\scr_wrapper_joystick_buttons.gml</script>
+        <script>scripts\scr_wrapper_joystick_has_pov.gml</script>
+        <script>scripts\scr_wrapper_joystick_direction.gml</script>
+        <script>scripts\scr_wrapper_joystick_check_button.gml</script>
+        <script>scripts\scr_wrapper_joystick_xpos.gml</script>
+        <script>scripts\scr_wrapper_joystick_ypos.gml</script>
+        <script>scripts\scr_wrapper_joystick_zpos.gml</script>
+        <script>scripts\scr_wrapper_joystick_rpos.gml</script>
+        <script>scripts\scr_wrapper_joystick_upos.gml</script>
+        <script>scripts\scr_wrapper_joystick_vpos.gml</script>
+        <script>scripts\scr_wrapper_joystick_pov.gml</script>
+        <script>scripts\scr_wrapper_game_end.gml</script>
+        <script>scripts\scr_wrapper_link_leave_wall.gml</script>
+        <script>scripts\scr_wrapper_get_keyboard_lastkey.gml</script>
+        <script>scripts\scr_wrapper_set_keyboard_lastkey.gml</script>
+        <script>scripts\scr_wrapper_get_mouse_x.gml</script>
+        <script>scripts\scr_wrapper_set_mouse_x.gml</script>
+        <script>scripts\scr_wrapper_get_mouse_y.gml</script>
+        <script>scripts\scr_wrapper_set_mouse_y.gml</script>
+        <script>scripts\scr_wrapper_get_fa_left.gml</script>
+        <script>scripts\scr_wrapper_set_fa_left.gml</script>
+        <script>scripts\scr_wrapper_get_fa_center.gml</script>
+        <script>scripts\scr_wrapper_set_fa_center.gml</script>
+        <script>scripts\scr_wrapper_get_fa_right.gml</script>
+        <script>scripts\scr_wrapper_set_fa_right.gml</script>
+        <script>scripts\scr_wrapper_get_fa_top.gml</script>
+        <script>scripts\scr_wrapper_set_fa_top.gml</script>
+        <script>scripts\scr_wrapper_get_fa_middle.gml</script>
+        <script>scripts\scr_wrapper_set_fa_middle.gml</script>
+        <script>scripts\scr_wrapper_get_fa_bottom.gml</script>
+        <script>scripts\scr_wrapper_set_fa_bottom.gml</script>
+        <script>scripts\scr_wrapper_get_vk_left.gml</script>
+        <script>scripts\scr_wrapper_set_vk_left.gml</script>
+        <script>scripts\scr_wrapper_get_vk_right.gml</script>
+        <script>scripts\scr_wrapper_set_vk_right.gml</script>
+        <script>scripts\scr_wrapper_get_vk_up.gml</script>
+        <script>scripts\scr_wrapper_set_vk_up.gml</script>
+        <script>scripts\scr_wrapper_get_vk_down.gml</script>
+        <script>scripts\scr_wrapper_set_vk_down.gml</script>
+        <script>scripts\scr_wrapper_get_vk_enter.gml</script>
+        <script>scripts\scr_wrapper_set_vk_enter.gml</script>
+        <script>scripts\scr_wrapper_get_vk_escape.gml</script>
+        <script>scripts\scr_wrapper_set_vk_escape.gml</script>
+        <script>scripts\scr_wrapper_get_vk_space.gml</script>
+        <script>scripts\scr_wrapper_set_vk_space.gml</script>
+        <script>scripts\scr_wrapper_get_vk_shift.gml</script>
+        <script>scripts\scr_wrapper_set_vk_shift.gml</script>
+        <script>scripts\scr_wrapper_get_vk_control.gml</script>
+        <script>scripts\scr_wrapper_set_vk_control.gml</script>
+        <script>scripts\scr_wrapper_get_pr_pointlist.gml</script>
+        <script>scripts\scr_wrapper_set_pr_pointlist.gml</script>
+        <script>scripts\scr_wrapper_get_pr_linelist.gml</script>
+        <script>scripts\scr_wrapper_set_pr_linelist.gml</script>
+        <script>scripts\scr_wrapper_get_pr_linestrip.gml</script>
+        <script>scripts\scr_wrapper_set_pr_linestrip.gml</script>
+        <script>scripts\scr_wrapper_get_pr_trianglelist.gml</script>
+        <script>scripts\scr_wrapper_set_pr_trianglelist.gml</script>
+        <script>scripts\scr_wrapper_get_pr_trianglestrip.gml</script>
+        <script>scripts\scr_wrapper_set_pr_trianglestrip.gml</script>
+        <script>scripts\scr_wrapper_get_pr_trianglefan.gml</script>
+        <script>scripts\scr_wrapper_set_pr_trianglefan.gml</script>
+        <script>scripts\scr_wrapper_get_tex_2DLink.gml</script>
+        <script>scripts\scr_wrapper_set_tex_2DLink.gml</script>
+        <script>scripts\scr_wrapper_get_tex_SMB_pipe.gml</script>
+        <script>scripts\scr_wrapper_set_tex_SMB_pipe.gml</script>
+      </scripts>
       <script>scripts\scr_initDelayedCallingDLL.gml</script>
       <script>scripts\scr_get_DLL_function.gml</script>
       <script>scripts\scr_call_DLL_function.gml</script>
@@ -390,7 +596,7 @@
   <rooms name="rooms">
     <room>rooms\rmMain</room>
   </rooms>
-  <constants number="80">
+  <constants number="82">
     <constant name="cDirSpr">game_save_id + "data\gfx\spr\"</constant>
     <constant name="cDirBg">game_save_id + "data\gfx\bg\"</constant>
     <constant name="cDirTex">game_save_id + "data\gfx\tex\"</constant>
@@ -407,6 +613,8 @@
     <constant name="cSprSmoke">5</constant>
     <constant name="cSprZapper">6</constant>
     <constant name="cSprZap">7</constant>
+    <constant name="cSprNESLink">8</constant>
+    <constant name="cSprNESPipe">9</constant>
     <constant name="cBgPauseMario">0</constant>
     <constant name="cBgShadow">1</constant>
     <constant name="cSndCoin">0</constant>

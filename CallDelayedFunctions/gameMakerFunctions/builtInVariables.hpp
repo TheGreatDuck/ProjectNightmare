@@ -22,3 +22,5 @@ extern variableWrapper* pr_linestrip;
 extern variableWrapper* pr_trianglelist;
 extern variableWrapper* pr_trianglestrip;
 extern variableWrapper* pr_trianglefan;
+extern variableWrapper* tex_2DLink;
+extern variableWrapper* tex_SMB_pipe;

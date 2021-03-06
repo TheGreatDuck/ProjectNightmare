@@ -176,5 +176,6 @@ if (downBlockCollision || linkY1 < 0)
 void drawLink(nes_wall* wall)
 {
     link* linkPointer = wall->linkPointer;
-    draw_sprite(wall->linkImage, linkPointer->subimage+2*linkPointer->dir, linkPointer->x, linkPointer->y);
+    d3d_draw_floor(linkPointer->x, linkPointer->y, 0, linkPointer->x + 8, linkPointer->y + 8, 0, wall->linkImage, 1, 1);
+    //draw_sprite(wall->linkImage, linkPointer->subimage+2*linkPointer->dir, linkPointer->x, linkPointer->y);
 }

@@ -30,6 +30,7 @@ event_inherited();
 sprite = cSprZap;
 height = 12;
 actor_create();
+pipe = undefined;
 </string>
           </argument>
         </arguments>
@@ -63,7 +64,7 @@ actor_create();
                 player_drop_holdable(0, 0, 0);
                 instance_destroy();
             }
-            nes_add_link(pointer, other.id);
+            nes_add_link(pointer, other.pipe);
             global.currentNESWall = id;
         }
     }
